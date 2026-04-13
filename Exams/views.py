@@ -4,8 +4,6 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.http import FileResponse, Http404
 from django.contrib import messages
 import os
-
-import requests
 from Exams.models import Exam, Submission, Question, SubQuestion,  QuestionImage, SubQuestionImage, Evaluation
 import google.generativeai as genai
 import fitz  # PyMuPDF
@@ -119,7 +117,7 @@ def save_exam_from_json(exam, raw_output):
                 }
             )
 
-def gemini_call_question_paper(file_url):
+def gemini_call_question_paper(file_path):
     prompt = '''
         Extract the content of this question paper into STRICT JSON format.
         Rules:
@@ -163,25 +161,20 @@ def gemini_call_question_paper(file_url):
             ]
         }
     '''
-    response = requests.get(file_url)
 
-    if response.status_code != 200:
-        raise Exception("❌ Failed to download file")
-
-    file_bytes = response.content
-
-    # 🔥 IMPORTANT: Validate PDF
-    if len(file_bytes) < 1000:
-        raise Exception("❌ File too small / invalid PDF")
-
-    if not file_bytes.startswith(b"%PDF"):
-        raise Exception("❌ Not a valid PDF file")
     for api_key in GEMINI_API_KEYS:
         try:
             print(f"\n🔑 Using KEY: {api_key[:6]}***")
             genai.configure(api_key=api_key)
 
-            # 🔥 STEP 2: Send file bytes directly
+            uploaded_file = genai.upload_file(file_path)
+
+            # wait until ready
+            while uploaded_file.state.name == "PROCESSING":
+                time.sleep(1)
+                uploaded_file = genai.get_file(uploaded_file.name)
+
+            # 🔀 Try models in random order
             for model_name in GEMINI_MODELS:
                 try:
                     print(f"🤖 Model: {model_name}")
@@ -189,13 +182,7 @@ def gemini_call_question_paper(file_url):
                     model = genai.GenerativeModel(model_name)
 
                     response = model.generate_content(
-                        [
-                            prompt,
-                            {
-                                "mime_type": "application/pdf",
-                                "data": file_bytes
-                            }
-                        ]
+                        [prompt, uploaded_file]
                     )
 
                     if response.text:
@@ -206,6 +193,7 @@ def gemini_call_question_paper(file_url):
                     err = str(model_error).lower()
                     print(f"❌ Model failed: {err}")
 
+                    # If quota hit → try next key (not just model)
                     if "quota" in err or "limit" in err:
                         break
 
@@ -252,7 +240,7 @@ def edit_exam_teacher(request, id):
         # 🔥 AUTO PARSE AFTER SAVE
         if parse_needed:
             try:
-                output = gemini_call_question_paper(exam.question_paper.url)
+                output = gemini_call_question_paper(exam.question_paper.path)
 
                 exam.questions.all().delete()
 
