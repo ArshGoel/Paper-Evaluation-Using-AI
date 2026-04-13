@@ -128,8 +128,6 @@ AUTH_USER_MODEL = 'Accounts.User'
 if ENVIRONMENT == "production":
     print("🔥 USING CLOUDINARY")
 
-    INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
-
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
     CLOUDINARY_STORAGE = {
