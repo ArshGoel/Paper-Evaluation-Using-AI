@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
+cloudinary_storage = MediaCloudinaryStorage()
 
 class User(AbstractUser):
     ROLE_CHOICES = [
@@ -23,8 +26,9 @@ class Student(models.Model):
     roll_number = models.CharField(max_length=20)
     profile_image = models.ImageField(
         upload_to='profile/',
-        default='profile/student.png',
-        blank=False
+        storage=cloudinary_storage,
+        blank=True,
+        null=True
     )
     student_class = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True) 
     course = models.CharField(max_length=50, default="BTECH")
@@ -57,7 +61,9 @@ class Teacher(models.Model):
     )
     profile_image = models.ImageField(
         upload_to='profile/',
-        default='profile/teacher.png',
+        storage=cloudinary_storage,
+        blank=True,
+        null=True
     )
     department = models.CharField(max_length=100)
     courses = models.ManyToManyField(Course, related_name='teachers')
