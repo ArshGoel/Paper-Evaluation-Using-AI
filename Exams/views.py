@@ -119,7 +119,7 @@ def save_exam_from_json(exam, raw_output):
                 }
             )
 
-def gemini_call_question_paper(file_path):
+def gemini_call_question_paper(file_url):
     prompt = '''
         Extract the content of this question paper into STRICT JSON format.
         Rules:
