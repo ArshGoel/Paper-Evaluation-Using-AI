@@ -67,12 +67,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Paper_Evaluation_Using_AI.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+import dj_database_url
+
+import dj_database_url
+
+ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
+
+if ENVIRONMENT == "local":
+    # 🟢 Local development → SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    # 🔵 Production → Neon PostgreSQL
+    DATABASES = {
+        'default': dj_database_url.parse(
+            os.getenv("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
