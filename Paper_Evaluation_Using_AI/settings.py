@@ -74,7 +74,6 @@ import dj_database_url
 ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
 if ENVIRONMENT == "local":
-    # 🟢 Local development → SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -82,7 +81,6 @@ if ENVIRONMENT == "local":
         }
     }
 else:
-    # 🔵 Production → Neon PostgreSQL
     DATABASES = {
         'default': dj_database_url.parse(
             os.getenv("DATABASE_URL"),
