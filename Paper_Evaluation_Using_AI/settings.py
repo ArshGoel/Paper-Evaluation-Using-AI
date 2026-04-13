@@ -35,6 +35,10 @@ INSTALLED_APPS = [
     'Accounts',
     'Exams',
     'Dashboards',
+    'cloudinary',
+    'cloudinary_storage',
+    'django.contrib.admin',
+    'django.contrib.auth',
 ]
 
 MIDDLEWARE = [
@@ -65,8 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Paper_Evaluation_Using_AI.wsgi.application'
-
-import dj_database_url
 
 import dj_database_url
 
