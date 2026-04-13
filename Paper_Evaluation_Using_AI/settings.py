@@ -4,7 +4,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 dotenv_path = BASE_DIR / '.env'
 if dotenv_path.exists():
@@ -126,14 +125,12 @@ STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build',"static")
 
 AUTH_USER_MODEL = 'Accounts.User'
 
-if ENVIRONMENT == "local":
+if ENVIRONMENT == "production":
+    print("🔥 USING CLOUDINARY")
 
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-else:
     INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
+
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': os.getenv('CLOUD_NAME'),
@@ -141,9 +138,13 @@ else:
         'API_SECRET': os.getenv('API_SECRET'),
     }
 
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    print("⚠ USING LOCAL STORAGE")
 
-    MEDIA_URL = f"https://res.cloudinary.com/{CLOUDINARY_STORAGE['CLOUD_NAME']}/"
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 LOGIN_URL = '/auth/slogin/'
 
 
