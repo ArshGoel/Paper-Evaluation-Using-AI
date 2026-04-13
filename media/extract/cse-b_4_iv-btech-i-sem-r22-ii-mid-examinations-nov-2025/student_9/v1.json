@@ -1,0 +1,169 @@
+{
+    "pages": [
+        {
+            "page": 1,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": true,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "**PART-B**\n\nQuestion 6: HDFS:- HDFS refers to Hadoop Distributed File System which is used to store data of large amount across multiple clusters.\n$\\rightarrow$ In Traditional file systems, the storage of large datasets will be difficult and requires more memory space in the system.\n$\\rightarrow$ To overcome this problems, Hadoop system is introduced, which consists HDFS to store large datasets across multiple clusters on commodity hardware.\n\nHDFS daemons:- Daemons is the processes running in the background.\n$\\rightarrow$ Daemons means process\n$\\rightarrow$ HDFS daemons are set of processes run in the Hadoop system.\n$\\rightarrow$ The Hadoop 2 consists of following daemons:\ni. Name Node $\\rightarrow$ $50080$ port\nii. Data Node $\\rightarrow$ $50082$ port\niii. Secondary Name Node $\\rightarrow$ $50090$ port\niv. Resource Manager $\\rightarrow$ $8088$ port\nv. Node Manager $\\rightarrow$ $8042$ port\n\n$\\rightarrow$ The HDFS consists NameNode (Master System) and DataNode (Slave System)\n$\\rightarrow$ The NameNode, Secondary Name Node, Resource Manager works on Master system and"
+        },
+        {
+            "page": 2,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": true,
+            "content": "Question 6 (continued): DataNode, Node Manager works on slave system.\ni. Name Node:\n$\\rightarrow$ NameNode works on Master System.\n$\\rightarrow$ The Primary purpose of NameNode is to store the Metadata.\n$\\rightarrow$ Metadata is the list of files in HDFS.\n$\\rightarrow$ The NameNode will interact with data node, at which locations of block of files store in Metadata.\n$\\rightarrow$ The Metadata is stored in memory.\n\nstarting of NameNode:-\n`hadoop-daemon.sh start namenode`\n\nstoping of NameNode:-\n`hadoop-daemon.sh stop namenode`\n\nii. Data Node:\n$\\rightarrow$ Data Node works on slave system.\n$\\rightarrow$ The NameNode always interact with data node.\n$\\rightarrow$ The Data Node is actual worker, follows the instructions of NameNode.\n$\\rightarrow$ Data Node will read, write and process the data in files.\n\nstarting of DataNode:-\n`hadoop-daemon.sh start datanode`\n\nstoping of DataNode:-\n`hadoop-daemon.sh stop datanode`"
+        },
+        {
+            "page": 3,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 97,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 6 (continued): iii. Secondary Name Node (SNN):\n$\\rightarrow$ The Secondary Name Node used for hourly backup.\n$\\rightarrow$ In Hadoop if files are failed or crashes then the secondary namenode is used for hourly backup to recover the data.\n$\\rightarrow$ The recovered data is stored in a file named fsimage and create new system, new datanode to store blocks.\n\n$\\rightarrow$ Functionalities SNN :-\n$\\rightarrow$ It groups the edit logs and fsimage together.\n$\\rightarrow$ It ensures the transactional logs.\n$\\rightarrow$ It uses checkpoints to check the data so SNN known as checkpoint Node.\n\n[Diagram: Secondary Name Node architecture. A box labeled \"Secondary Name Node\" sends an arrow labeled \"Create Edit logs\" to a box labeled \"Name Node\". A box below SNN labeled \"Update fsimage based on edit logs\" points to a box labeled \"fsimage\". An arrow from the Name Node box points down to a box labeled \"fsimage\". An arrow from the SNN \"fsimage\" box points to a box labeled \"Copy the updated fsimage back to namenode\", which then points to the Name Node's \"fsimage\" box.]\nfig: Secondary Name Node.\n\niv. Resource Manager:\n$\\rightarrow$ Resource Manager works on Master System.\n$\\rightarrow$ Manages the resources on various applications.\n$\\rightarrow$ It consists of two components:\ni. Application Manager: responsible for accepting"
+        },
+        {
+            "page": 4,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": true,
+            "content": "Question 6 (continued): request for client.\nii. Scheduler: utilized to provide resources across applications.\n\nstarting of Resource Manager:-\n`yarn-daemon.sh start resourcemanager`\n\nstoping:-\n`yarn-daemon.sh stop resourcemanager`\n\nv. Node Manager:\n$\\rightarrow$ Works on slave system. Manages memory resources in node and memory.\n\nstarting:- `yarn-daemon.sh start nodemanager`\nstoping:- `yarn-daemon.sh stop nodemanager`\n\n$\\rightarrow$\n\nQuestion 8: Hadoop Distributed File System (HDFS):-\nHadoop is an open source framework for store and process the large volume of data.\n$\\rightarrow$ As the usage increasing, the limit of data increases which made difficult to the traditional file systems.\n$\\rightarrow$ In this situation Hadoop came into picture, which has HDFS, YARN, MapReduce and HBase as core components for storing, processing and analyzing large datasets across multiple clusters on commodity hardware."
+        },
+        {
+            "page": 5,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 96,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 8 (continued): $\\rightarrow$ HDFS is the distributed file system which stores files in distributed manner consumes less space.\n$\\rightarrow$ HDFS is the backbone of the Hadoop system.\n$\\rightarrow$ HDFS is the system where files are stored in clear manner either structured or unstructured data.\n\n[Diagram: HDFS Architecture. A box labeled \"Client\" has arrows labeled \"read\" and \"write\" pointing to two \"Rack\" structures. Above, \"Client\" also connects to \"Name Node\" with an arrow labeled \"metadata operations\". The \"Name Node\" has an arrow labeled \"Metadata\" and another pointing to the Data Nodes labeled \"Block operations\". Two Racks are shown: \"Rack 1\" contains three \"Data node\" blocks, and \"Rack 2\" contains two \"Data node\" blocks. An arrow labeled \"Replication\" exists between Rack 1 and Rack 2.]\nfig: HDFS Architecture\n\n$\\rightarrow$ The HDFS is made up of NameNode, DataNode, Secondary Name Node, checkpoints, Backup node and Blocks."
+        },
+        {
+            "page": 6,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 8 (continued): Components of HDFS:-\n\ni. Name Node:\n$\\rightarrow$ NameNode is the Master Node.\n$\\rightarrow$ NameNode manages all datanodes and assign works to them.\n$\\rightarrow$ The Namenode won't read data that exists in file.\n$\\rightarrow$ Namenode execute filesystem namespaces, opening, closing and renaming files and directories.\n$\\rightarrow$ Namenode is to deploy on reliable hardware which has high configuration, not on commodity hardware.\n\nii. Data Node:\n$\\rightarrow$ Data Node is the actual worker.\n$\\rightarrow$ Data Node will follow the instructions of NameNode and perform operations such as creation, deletion etc.\n$\\rightarrow$ Data Node will perform reading, writing & processing, etc.\n$\\rightarrow$ Data Node is deployed on commodity hardware.\n\n[Diagram: A box labeled \"Name Node\" at the top with arrows pointing down to three separate boxes each labeled \"DataNode\". Inside each DataNode box are smaller squares labeled \"Blocks\".]"
+        },
+        {
+            "page": 7,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 97,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 8 (continued): iii. Secondary Name Node:\n$\\rightarrow$ The Secondary Name Node (SNN) is to merge edit logs and fsimage together.\n$\\rightarrow$ The Secondary Name Node will generate checkpoints so it is also known checkpoint node.\n$\\rightarrow$ In this node all transaction logs are stored and transfers as needed.\n\n[Diagram: Secondary Name Node process. A box \"Secondary Name Node\" sends an arrow labeled \"Create Edit logs for transactions\" to \"Name Node\". Below SNN is a box \"Update fsimage based on edit logs\" pointing to \"fsimage\". An arrow from Name Node points to its own \"fsimage\" box. An arrow from SNN \"fsimage\" labeled \"Copy update fsimage back to namenode\" points to the Name Node's \"fsimage\" box.]\nfig: Secondary Name Node\n\niv. Checkpoints:\n$\\rightarrow$ Checkpoints are generated when the edit logs and fsimage merges.\n$\\rightarrow$ For every transaction a new checkpoint is generates by SNN.\n\nv. Backup Node:\n$\\rightarrow$ Backup Node is to active the NameNode or DataNode in case of NameNode fails.\n$\\rightarrow$ But, cannot use/replace NameNode with Backup Node.\n\nvi. Blocks:\nBlocks are the primary locations where data stores in the HDFS."
+        },
+        {
+            "page": 8,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10: Machine learning:-\nMachine learning is a subfield of Artificial Intelligence which allows models to learn from patterns and predefined classes to predict the outcomes.\n$\\rightarrow$ In simple, Machine learning is a process of making model to learn from data and make decisions like humans to process and analyze the data.\n\nVarious techniques of Machine learning:-\nThe machine learning has categorized into follow:\ni. Supervised learning\nii. Unsupervised learning\niii. Reinforcement learning\niv. Semi-supervised learning\n\ni. Supervised learning:\n$\\rightarrow$ Supervised learning is defined as models trained by labelled.\n$\\rightarrow$ Labelleds are combination of input features and output labels.\n$\\rightarrow$ In this learning, learns to map points between input and correct output.\n$\\rightarrow$ It is both validation and training labelled.\n$\\rightarrow$ There are two types:\na. Classification\nb. Regression"
+        },
+        {
+            "page": 9,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10 (continued): a) Classification: it predicts the outcomes based on predefined classes.\n$\\rightarrow$ Decision Tree, Logistic Regression are algorithms of classification.\nb) Regression: is reading continuous data, it finds the relationship between inputs and numerical value.\n$\\rightarrow$ Linear regression, polynomial regression etc are algorithms.\n\nEg.: When you train a model with labelled images of cats & dogs, it learns the features from them.\nWhen you shown new image, it predicts the outcome correctly.\n\nii. Unsupervised learning:\n$\\rightarrow$ Unsupervised learning is the process of training model with unlabelled data.\n$\\rightarrow$ Unlabelled data means without output labels.\n$\\rightarrow$ There are few types:\na) clustering: is a grouping of similar items based on similarities into cluster.\nb) Dimensionality Reduction Technique: is to reduce no. of features while storing important information.\nc) Association rules: to determine the behavior or assign."
+        },
+        {
+            "page": 10,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10 (continued): Eg.: When you have customers unlabelled data, you can seggregate them into clusters based on their purchase behavior.\n\niii. Reinforcement learning:\n$\\rightarrow$ Reinforcement learning is the training agent to produce sequence of transaction through trail and errors.\n$\\rightarrow$ This technique will receive feedback in the form of reward / penalties to over the optimal time.\n$\\rightarrow$ There are two types:\na) Positive Reinforcement\nb) Negative Reinforcement\n$\\rightarrow$ Algorithms used such as\n$\\rightarrow$ Q-learning\n$\\rightarrow$ Deep Q-learning\n\nEg.: When a Agent learns to play chess, it gets positive feedback for positive move and negative feedback for bad move, anyway learns strategy to win.\n\niv. Semi-supervised learning:\n$\\rightarrow$ It is the combination of both supervised and unsupervised learning.\n$\\rightarrow$ It takes small amount of labelled datasets and large amount of unlabelled datasets, to get efficient in costly systems."
+        },
+        {
+            "page": 11,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 97,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10 (continued): Eg.: When you train translation model, language translation takes labelled sentence pair gives intensive outcomes. In this both labelled & unlabelled sentence pair is provided to test the model.\n\nQuestion 11: Social Media Analytics:-\nSocial Media Analytics are the extracting, deriving insightful information from the large volume of social media data.\n$\\rightarrow$ Social Media generates enormous of data in the form of likes, chars, posts and messages.\n$\\rightarrow$ The population increasing, so as the social media usage also increasing thoroughly.\n$\\rightarrow$ The social media analytics will help to brand promotions, influences, audience interactions.\n$\\rightarrow$ The social media will be positive as well as negative effect to the society.\n$\\rightarrow$ Social media can be twitter, facebook, instagram, LinkedIn, whatsapp etc."
+        },
+        {
+            "page": 12,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 11 (continued): Importance of Social Media Analytics:-\n\n$\\rightarrow$ Social Media Analytics are important to know the trends going on world.\n$\\rightarrow$ This will help to promote their brands as positive or negative talks will spread wildfire through social media.\n$\\rightarrow$ And also it will helps to know the strategies for business.\n$\\rightarrow$ shows the competitor tricks and way of improving business.\n$\\rightarrow$ Social Media Analytics also allows to read the data by \"rtweet\" or \"tweetr\".\n$\\rightarrow$ Similarly can also used for other social media platforms.\n$\\rightarrow$ By Social Media Analytics every small issue can be spread worldwide and solves within in days.\n$\\rightarrow$ If we take an example of facebook, there many videos will be uploaded as seeking for help or raising their issues at their places.\n$\\rightarrow$ These all problems will reach to higher authorities or helpers through shares, likes and reposts then the"
+        },
+        {
+            "page": 13,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 11 (continued): issues get resolved.\n\nApplications:-\n1. Content Sharing: The Social Media Analytics are used to share the content to one another through connections, friends etc.\n2. Audience Support: The audience are support and increase the usage of social media.\n3. Paid Influence: Influences the content based on investment.\n4. Fair Influence: Checks the content genuinely influenced, reached high level through good content & quality.\n\n$\\rightarrow$ In hadoop Social Media Analytics will follow HDFS to store the data across multiple places.\n$\\rightarrow$ Which also update and adjust the data real-time as data produces regularly."
+        },
+        {
+            "page": 14,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "**PART-A**\n\nQuestion 1: Inputs and Outputs of MapReduce:\n$\\rightarrow$ Inputs are which streamed into key-value pairs by Map() in MapReduce.\n$\\rightarrow$ Outputs are which takes result of map and streams the data in key value pairs by Reduce() of MapReduce.\n\nQuestion 2: Data moved in and out of Hadoop:-\n$\\rightarrow$ Data moved in of Hadoop is, ingestion of data into HDFS from various sources.\n$\\rightarrow$ Data moved out of Hadoop is, egress of data into various sources such as warehouse, from HDFS.\n\nQuestion 3: Function of Secondary Name Node:-\nSecondary Name Node will merge the edit logs and fsimage together, make scalable.\n$\\rightarrow$ Secondary Name Node will generate checkpoints when edit logs and fsimage merges newly."
+        },
+        {
+            "page": 15,
+            "primary_language": "English",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 4: Supervised learning:-\nSupervised learning is the trained a model with labelled data (input and corresponding outputs) to get correct outcomes.\nEg.: When you train model with labelled images cat & dogs it learns features and if you shown new, it will identify.\n\nQuestion 5: Applications of R:-\n$\\rightarrow$ Data analysis in R\n$\\rightarrow$ Data Serialization & visualization\nEg.: Box plate, sand box, ggplot"
+        }
+    ]
+}

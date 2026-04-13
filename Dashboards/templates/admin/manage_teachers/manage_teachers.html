@@ -1,0 +1,41 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Manage Teachers{% endblock %}
+{% block manage_teachers_active %}active{% endblock manage_teachers_active %}
+{% block admin_content %}
+<div class="container mt-4">
+
+    <h2>Manage Teachers</h2>
+    <a href="{% url 'add_teacher' %}" class="btn btn-primary">
+        + Add Teacher
+    </a>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for teacher in teachers %}
+            <tr>
+                <td>{{ teacher.user.username }}</td>
+                <td>{{ teacher.user.email }}</td>
+                <td>{{ teacher.department }}</td>
+                <td>
+                    <a href="{% url 'edit_teacher' teacher.id %}" class="btn btn-sm btn-warning">Edit</a>
+
+                    <form action="{% url 'delete_teacher' teacher.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

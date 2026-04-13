@@ -1,0 +1,72 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_students_active %}active{% endblock manage_students_active %}
+{% block admin_content %}
+<div class="container mt-4">
+
+    <h2>Edit Student</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-2">
+            <label>Username</label>
+            <input type="text" name="username" value="{{ student.user.username }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ student.user.email }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Phone</label>
+            <input type="text" name="phone" value="{{ student.user.phone }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>First Name</label>
+            <input type="text" name="firstname" value="{{ student.user.first_name }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Last Name</label>
+            <input type="text" name="lastname" value="{{ student.user.last_name }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Phone</label>
+            <input type="text" name="phone" value="{{ student.user.phone }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Roll Number</label>
+            <input type="text" name="roll_number" value="{{ student.roll_number }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Branch</label>
+            <input type="text" name="branch" value="{{ student.branch }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Year</label>
+            <select name="year" class="form-control">
+                <option value="1" {% if student.year == 1 %}selected{% endif %}>1st Year</option>
+                <option value="2" {% if student.year == 2 %}selected{% endif %}>2nd Year</option>
+                <option value="3" {% if student.year == 3 %}selected{% endif %}>3rd Year</option>
+                <option value="4" {% if student.year == 4 %}selected{% endif %}>4th Year</option>
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label>Profile Image</label>
+            <input type="file" name="profile_image" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="{% url 'manage_students' %}" class="btn btn-secondary">Cancel</a>
+
+    </form>
+
+</div>
+{% endblock %}

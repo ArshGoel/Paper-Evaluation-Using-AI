@@ -1,0 +1,161 @@
+{% extends "student/student_base.html" %}
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock title %}
+{% block student_dashactive %}active{% endblock student_dashactive %}
+
+
+{% block student_content %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_dash.css' %}">
+{% endblock extra_css %}
+<div class="sd-container" id="app">
+  <!-- Topbar -->
+  <header class="sd-topbar">
+    <div class="sd-actions" style="">
+      <div class="sd-avatar" title="{{ request.user.get_full_name|default:request.user.username }}">
+        {{ request.user.first_name|first|default:"S" }}{{ request.user.last_name|first|default:"" }}
+      </div>
+      <button id="themeToggle" class="sd-icon-btn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <section class="sd-row sd-greeting">
+    <div class="sd-greet-card">
+      <h1>Hello, <span>{{ request.user.first_name|default:'Student' }}</span> 👋</h1>
+      <p>Here’s what’s happening today. Stay curious and keep learning!</p>
+    </div>
+
+    <div class="sd-kpi-grid">
+      <div class="sd-card sd-kpi" role="status">
+        <div class="sd-kpi-label">GPA</div>
+        <div class="sd-kpi-value" id="kpiGpa">{{ cgpa }}</div>
+      </div>
+      <div class="sd-card sd-kpi">
+        <div class="sd-kpi-label">Attendance</div>
+        <div class="sd-kpi-value" id="kpiAttendance">{{ attendance_pct }}%</div>
+      </div>
+      <div class="sd-card sd-kpi">
+        <div class="sd-kpi-label">Credits</div>
+        <div class="sd-kpi-value" id="kpiCredits">{{ total_credits|default:"18" }}</div>
+      </div>
+      <div class="sd-card sd-kpi">
+        <div class="sd-kpi-label">Branch</div>
+        <div class="sd-kpi-value" id="kpiAlerts">{{ branch }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main grid -->
+  <section class="sd-grid">
+    <!-- Left column -->
+    <div class="sd-col">
+      <!-- Today’s schedule -->
+      <!-- Today’s schedule -->
+      <div class="sd-card mb-4">
+        <div class="sd-card-head">
+          <h2>Today’s Timetable</h2>
+          <span class="sd-subtle" id="todayLabel"></span>
+        </div>
+
+        <ul class="sd-list schedule">
+
+          <li>
+            <div class="sd-time">09:00 – 10:00</div>
+            <div class="sd-course">
+              <strong>CS201</strong> – Data Structures
+              <div class="sd-subtle">Room 101 • Lecture</div>
+            </div>
+          </li>
+
+          <li>
+            <div class="sd-time">10:00 – 11:00</div>
+            <div class="sd-course">
+              <strong>CS301</strong> – DBMS
+              <div class="sd-subtle">Room 202 • Lecture</div>
+            </div>
+          </li>
+
+          <li>
+            <div class="sd-time">11:15 – 12:15</div>
+            <div class="sd-course">
+              <strong>CS305</strong> – Operating Systems
+              <div class="sd-subtle">Room 303 • Lab</div>
+            </div>
+          </li>
+
+          <li>
+            <div class="sd-time">01:00 – 02:00</div>
+            <div class="sd-course">
+              <strong>CS401</strong> – Computer Networks
+              <div class="sd-subtle">Room 105 • Lecture</div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Assignments -->
+      <div class="sd-card">
+        <div class="sd-card-head">
+          <h2>Exams</h2>
+          <a href="#" class="sd-link">View all</a>
+        </div>
+        <ul>
+          {% for exam in exams %}
+          <li>
+            <strong>{{ exam.title }}</strong> ({{ exam.course.name }})
+            <br>
+            Date: {{ exam.date|date:"M d, Y" }}
+            <br>
+            Marks: {{ exam.total_marks }}
+          </li>
+          {% empty %}
+          <li>No exams available</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="sd-col">
+      <!-- Subjects -->
+      <div class="sd-card mb-4">
+        <div class="sd-card-head">
+          <h2>Your Subjects</h2>
+        </div>
+        <ul class="sd-list subjects">
+          {% for s in subjects %}
+          <li>
+            <strong>{{ s.code }}</strong> – {{ s.name }}
+          </li>
+          {% empty %}
+          <li>No subjects available</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Announcements -->
+      <div class="sd-card">
+        <div class="sd-card-head">
+          <h2>Announcements</h2>
+          <a href="#" class="sd-link">All</a>
+        </div>
+        <ul class="sd-list announcements">
+          {% for n in announcements %}
+          <li>
+            <strong>{{ n.title }}</strong>
+            <div class="sd-subtle">{{ n.created_at|date:"M d, Y" }}</div>
+            <p>{{ n.body|truncatechars:140 }}</p>
+          </li>
+          {% empty %}
+          <li class="sd-empty">No announcements.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="{% static 'javascript/student_dash.js' %}"></script>
+{% endblock student_content %}

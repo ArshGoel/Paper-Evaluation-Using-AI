@@ -1,0 +1,62 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block admin_dashboard_active %}active{% endblock admin_dashboard_active %}
+{% block admin_content %}
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock extra_css %}
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-3 ">
+        <canvas id="studentChart"></canvas>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Students</h5>
+            <h3>{{ total_students }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Submissions</h5>
+            <h3>{{ total_submissions }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Evaluated</h5>
+            <h3>{{ evaluated_submissions }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Pending</h5>
+            <h3>{{ pending_evaluations }}</h3>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-4">
+    <h5>Average Score: {{ avg_score }}</h5>
+</div>
+<script>
+    
+    // Students Chart
+    new Chart(document.getElementById("studentChart"), {
+        type: 'pie',
+        data: {
+            labels: ['Students', 'Teachers'],
+            datasets: [{
+                data: [{{ total_students }}, {{ total_teachers }}],
+            }]
+        }
+    });
+</script>
+{% endblock %}

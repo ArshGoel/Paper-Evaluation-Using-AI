@@ -1,0 +1,95 @@
+{% extends "teacher/teacher_base.html" %}
+{% load static %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+{% block teacher_adashactive %}active{% endblock teacher_adashactive %}
+
+{% block teacher_content %}
+{% block extra_css %}
+<script>
+  const savedTheme = localStorage.getItem('sd-theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+</script>
+
+{% endblock extra_css %}
+
+<div class="sd-container">
+
+  <!-- Topbar -->
+  <header class="sd-topbar">
+    <div class="sd-actions" style="">
+      <div class="sd-avatar" title="{{ request.user.get_full_name|default:request.user.username }}">
+        {{ request.user.first_name|first|default:"S" }}{{ request.user.last_name|first|default:"" }}
+      </div>
+      <button id="themeToggle" class="sd-icon-btn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <!-- Greeting -->
+  <section class="sd-row mb-4">
+    <div class="sd-greet-card mb-4">
+      <h1>Welcome, {{ request.user.first_name|default:"Teacher" }} 👋</h1>
+      <p>Manage exams, students, and evaluations.</p>
+    </div>
+
+    <!-- KPIs -->
+    <div class="sd-kpi-grid">
+      <div class="sd-card sd-kpi">
+        <div>Total Exams</div>
+        <h2>{{ total_exams }}</h2>
+      </div>
+
+  </section>
+
+  <!-- Main Grid -->
+  <section class="sd-grid mb-4">
+
+    <!-- Courses -->
+    <div class="sd-card">
+      <h2>Your Courses</h2>
+      <ul>
+        {% for c in courses %}
+          <li><strong>{{ c.code }}</strong> - {{ c.name }}</li>
+        {% empty %}
+          <li>No courses assigned</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Classes -->
+    <div class="sd-card">
+      <h2>Your Classes</h2>
+      <ul>
+        {% for cls in classes %}
+          <li>{{ cls.name }} (Year {{ cls.year }})</li>
+        {% empty %}
+          <li>No classes assigned</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </section>
+
+  <!-- Exams -->
+  <section class="sd-card mb-4">
+    <h2>Your Exams</h2>
+
+    <ul>
+      {% for exam in exams %}
+        <li>
+          <strong>{{ exam.title }}</strong><br>
+          {{ exam.course.name }} | {{ exam.class_assigned.name }}<br>
+          Date: {{ exam.date|date:"M d, Y" }}
+        </li>
+      {% empty %}
+        <li>No exams created</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+</div>
+<script src="{% static 'javascript/teacher_dash.js' %}"></script>
+
+{% endblock teacher_content %}

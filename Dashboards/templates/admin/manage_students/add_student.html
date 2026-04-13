@@ -1,0 +1,44 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_students_active %}active{% endblock manage_students_active %}
+{% block admin_content %}
+<div class="container mt-4">
+
+<h2>Add Student</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input name="username" placeholder="Username" class="form-control mb-2">
+    <input name="email" placeholder="Email" class="form-control mb-2">
+    <input name="password" type="password" placeholder="Password" class="form-control mb-2">
+    <input name="phone" placeholder="Phone" class="form-control mb-2">
+
+    <input name="firstname" placeholder="First Name" class="form-control mb-2">
+    <input name="lastname" placeholder="Last Name" class="form-control mb-2">
+
+    <input name="roll_number" placeholder="Roll Number" class="form-control mb-2">
+    <input name="branch" placeholder="Branch" class="form-control mb-2">
+
+    <select name="year" class="form-control mb-2">
+        <option value="1">1st Year</option>
+        <option value="2">2nd Year</option>
+        <option value="3">3rd Year</option>
+        <option value="4">4th Year</option>
+    </select>
+
+    <input type="date" name="dob" class="form-control mb-2">
+
+    <select name="student_class" class="form-control mb-2">
+        {% for c in classes %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="file" name="profile_image" class="form-control mb-2">
+
+    <button class="btn btn-success">Add Student</button>
+
+</form>
+
+</div>
+{% endblock %}

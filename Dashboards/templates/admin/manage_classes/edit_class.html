@@ -1,0 +1,35 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_classes_active %}active{% endblock manage_classes_active %}
+
+{% block admin_content %}
+<div class="container mt-4">
+
+    <h2>Edit Class</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-2">
+            <label>Class Name</label>
+            <input type="text" name="name" 
+                   value="{{ cls.name }}" 
+                   class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Year</label>
+            <select name="year" class="form-control">
+                <option value="1" {% if cls.year == 1 %}selected{% endif %}>1st Year</option>
+                <option value="2" {% if cls.year == 2 %}selected{% endif %}>2nd Year</option>
+                <option value="3" {% if cls.year == 3 %}selected{% endif %}>3rd Year</option>
+                <option value="4" {% if cls.year == 4 %}selected{% endif %}>4th Year</option>
+            </select>
+        </div>
+
+        <button class="btn btn-success">Update</button>
+        <a href="{% url 'manage_classes' %}" class="btn btn-secondary">Cancel</a>
+
+    </form>
+
+</div>
+{% endblock %}

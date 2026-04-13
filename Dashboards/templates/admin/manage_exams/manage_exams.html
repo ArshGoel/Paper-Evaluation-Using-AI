@@ -1,0 +1,41 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Manage Exams{% endblock %}
+{% block manage_exams_active %}active{% endblock manage_exams_active %}
+{% block admin_content %}
+<div class="container mt-4">
+
+    <h2>Manage Exams</h2>
+
+    <a href="{% url 'add_exam' %}" class="btn btn-primary mb-3">+ Add Exam</a>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Exam Name</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for exam in exams %}
+            <tr>
+                <td>{{ exam.title }}</td>
+                <td>{{ exam.course }}</td>
+                <td>{{ exam.date }}</td>
+                <td>
+                    <a href="{% url 'edit_exam' id=exam.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'admin_upload_submission_exam' exam.id %}" 
+                        class="btn btn-success btn-sm">
+                        Upload Answer Sheet
+                    </a>
+                    <a href="{% url 'delete_exam' id=exam.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

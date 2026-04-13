@@ -1,0 +1,43 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_courses_active %}active{% endblock manage_courses_active %}
+{% block admin_content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between">
+        <h2>Courses</h2>
+        <a href="{% url 'add_course' %}" class="btn btn-primary">+ Add Course</a>
+    </div>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for c in courses %}
+            <tr>
+                <td>{{ c.name }}</td>
+                <td>{{ c.code }}</td>
+                <td>
+                    <a href="{% url 'edit_course' c.id %}" class="btn btn-warning btn-sm">Edit</a>
+
+                    <form action="{% url 'delete_course' c.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No courses found</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

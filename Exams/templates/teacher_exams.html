@@ -1,0 +1,121 @@
+{% extends "teacher/teacher_base.html" %}
+{% load static %}
+{% block title %}Teacher Exams{% endblock title %}
+{% block teacher_aexamsactive %}active{% endblock teacher_aexamsactive %}
+
+{% block teacher_content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Exams</h2>
+    {% if exams %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Class</th>
+                    <th>Date</th>
+                    <th>Question Paper</th>
+                    <th>Answer Key</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exam in exams %}
+                <tr>
+                    <td>{{ exam.title }}</td>
+                    <td>{{ exam.course.name }}</td>
+                    <td>{{ exam.class_assigned.name }}</td>
+                    <td>{{ exam.date|date:"d M Y, H:i" }}</td>
+
+                    <td>
+                        {% if exam.question_paper %}
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary view-pdf-btn"
+                                    data-exam-id="{{ exam.id }}"
+                                    data-url="{% url 'view_pdf' exam.id 'question_paper' %}"
+                                    data-label="Question Paper">
+                                View PDF
+                            </button>
+                        {% else %}
+                            <span class="text-muted">Not uploaded</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if exam.answer_key %}
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary view-pdf-btn"
+                                    data-exam-id="{{ exam.id }}"
+                                    data-url="{% url 'view_pdf' exam.id 'answer_key' %}"
+                                    data-label="Answer Key">
+                                View PDF
+                            </button>
+                        {% else %}
+                            <span class="text-muted">Not uploaded</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'edit_exam_teacher' exam.id %}" class="btn btn-sm btn-warning">
+                            Edit
+                        </a>
+                        <a href="{% url 'view_parsed_exam' exam.id %}" class="btn btn-sm btn-dark">
+                            View Parsed Paper
+                        </a>
+                        <a href="{% url 'view_submissions' exam.id %}" class="btn btn-sm btn-success">
+                            View Submissions
+                        </a>
+                    </td>
+                </tr>
+                <tr class="pdf-viewer-row d-none" id="pdf-row-{{ exam.id }}">
+                    <td colspan="7" class="p-0">
+                        <div class="pdf-viewer-container" id="pdf-container-{{ exam.id }}"></div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const viewerBase = "{% static 'pdfjs/web/viewer.html' %}";
+
+      function buildViewerHtml(url, label) {
+        return '<div class="border-top py-3">' +
+               '<div class="d-flex justify-content-between align-items-center mb-3">' +
+               '<h5 class="mb-0">' + label + '</h5>' +
+               '<button type="button" class="btn btn-sm btn-secondary" onclick="this.closest(\'tr.pdf-viewer-row\').classList.add(\'d-none\')">Close</button>' +
+               '</div>' +
+               '<iframe src="' + viewerBase + '?file=' + encodeURIComponent(url) + '" ' +
+                       'width="100%" height="600" class="border" title="' + label + ' Viewer"></iframe>' +
+               '</div>';
+      }
+
+      document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          const examId = this.dataset.examId;
+          const url = this.dataset.url;
+          const label = this.dataset.label;
+          const row = document.getElementById('pdf-row-' + examId);
+          const container = document.getElementById('pdf-container-' + examId);
+          if (!row || !container) return;
+
+          if (container.dataset.currentUrl === url && !row.classList.contains('d-none')) {
+            row.classList.add('d-none');
+            return;
+          }
+
+          container.innerHTML = buildViewerHtml(url, label);
+          container.dataset.currentUrl = url;
+          row.classList.remove('d-none');
+          row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    });
+    </script>
+    {% else %}
+        <div class="alert alert-info">No exams available</div>
+    {% endif %}
+   
+</div>
+{% endblock teacher_content %}

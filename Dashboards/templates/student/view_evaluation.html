@@ -1,0 +1,77 @@
+{% extends "student/student_base.html" %}
+{% load static %}
+
+{% block student_content %}
+{% block student_examsactive %}active{% endblock student_examsactive %}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h3>{{ submission.exam.title }}</h3>
+            <p><strong>Course:</strong> {{ submission.exam.course.name }}</p>
+            <p><strong>Date:</strong> {{ submission.exam.date }}</p>
+
+            <h4 class="mt-3">
+                Total Score:
+                <span class="badge bg-success">
+                    {{ evaluation.total_score }} / {{ submission.exam.total_marks }}
+                </span>
+            </h4>
+        </div>
+    </div>
+
+    <!-- QUESTION WISE -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h4 class="mb-3">Question-wise Evaluation</h4>
+
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Question</th>
+                        <th>Max Marks</th>
+                        <th>Marks Awarded</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for q in question_evals %}
+                    <tr>
+                        <td>
+                            <strong>Q{{ q.question.question_number }}</strong><br>
+                            <small class="text-muted">
+                                {{ q.question.text|truncatechars:100 }}
+                            </small>
+                        </td>
+
+                        <td>{{ q.question.marks }}</td>
+
+                        <td>
+                            <span class="badge bg-primary">
+                                {{ q.score }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if q.feedback %}
+                                {{ q.feedback }}
+                            {% else %}
+                                <span class="text-muted">No feedback</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

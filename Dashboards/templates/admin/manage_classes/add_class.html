@@ -1,0 +1,23 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_classes_active %}active{% endblock manage_classes_active %}
+
+{% block admin_content %}
+
+<div class="container mt-4">
+<form method="POST">
+    {% csrf_token %}
+    <input name="name" placeholder="Class Name (CSE-A)" class="form-control mb-2">
+
+    <select name="year" class="form-control mb-2">
+        <option value="1">1st Year</option>
+        <option value="2">2nd Year</option>
+        <option value="3">3rd Year</option>
+        <option value="4">4th Year</option>
+    </select>
+
+    <button class="btn btn-success">Add Class</button>
+</form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About Project - AI Eval{% endblock %}
+
+{% block body %}
+{% block extracss %}
+<link rel="stylesheet" href="{% static "css/aboutus.css" %}" />
+
+{% endblock extracss %}
+<section class="container py-5">
+  <div class="row align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-6 mb-4 mb-md-0">
+          <h2 class="fw-bold mb-4" style="font-size: 2.5rem;">About <span style="color: #FF3C3C;">AI Eval</span></h2>
+          <p style="font-size: 1.1rem; line-height: 1.8; text-align: justify;">
+                Welcome to <strong>Paper Evaluation Using Artificial Intelligence</strong>, an innovative platform developed with the vision of transforming traditional evaluation systems into smart, efficient, and unbiased processes. This project is built by a team of passionate individuals — <strong>Arsh Goel</strong>, <strong>I Benjamen</strong>, <strong>S Vishwa Avadhan Reddy</strong>, and <strong>L Varsha</strong> — who identified the challenges in manual paper correction such as time consumption, inconsistency, and human bias.
+            </p>
+
+            <p style="font-size: 1.1rem; line-height: 1.8; text-align: justify;">
+                Our system leverages the power of Artificial Intelligence to automate the evaluation of answer sheets with accuracy and consistency. By using advanced techniques in Natural Language Processing and Machine Learning, the platform analyzes responses, assigns marks, and provides meaningful feedback. This not only reduces the workload of educators but also ensures fair and transparent assessment for students.
+            </p>
+
+            <p style="font-size: 1.1rem; line-height: 1.8; text-align: justify;">
+                At its core, our mission is to enhance the education system by integrating intelligent solutions that save time, improve accuracy, and promote scalability. With this platform, we aim to bridge the gap between traditional evaluation methods and modern technological advancements, making assessments smarter and more reliable.
+            </p>
+
+            <p class="mt-4 fw-semibold" style="font-size: 1.2rem;">
+                <i class="bi bi-stars me-2 text-primary"></i> Empowering Education with Intelligent Evaluation.
+            </p>
+      </div>
+
+      <!-- Image Section -->
+      <div class="col-md-6">
+          <img src="{% static 'images/logo.png' %}" class="img-fluid rounded-4 shadow" alt="About Foxxy Drip">
+      </div>
+  </div>
+</section>
+
+<section class="container py-5">
+  <div class="text-center">
+    <h4 class="fw-bold mb-4">Meet Our Guide</h4>
+    <div class="row justify-content-center">
+      <div class="col-md-2 mb-2">
+        <img src="{% static 'images/profiles/RajeshTiwariSir.png' %}" alt="Founder" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+        <h5 class="fw-semibold mb-1">Dr. Rajesh Tiwari</h5>
+        <p class="text-muted small">Professor, Dept of CSE, CMREC</p>
+      </div>
+    </div>
+  </div>
+  <!-- Team Section -->
+  <div class="text-center">
+    <h4 class="fw-bold mb-4">Meet The Team</h4>
+    <div class="row justify-content-center">
+      <div class="col-md-2 mb-2">
+        <img src="{% static 'images/profiles/228R1A0571.jpeg' %}" alt="Founder" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+        <h5 class="fw-semibold mb-1">Arsh Goel</h5>
+        <p class="text-muted small">Developer And Team Leader</p>
+      </div>
+      <div class="col-md-2 mb-2">
+        <img src="{% static 'images/profiles/228R1A0598.jpg' %}" alt="Founder" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+        <h5 class="fw-semibold mb-1">I Benjamen</h5>
+        <p class="text-muted small">Developer</p>
+      </div>
+      <div class="col-md-2 mb-2">
+        <img src="{% static 'images/profiles/228R1A05C0.jpg' %}" alt="Founder" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+        <h5 class="fw-semibold mb-1">S Vishwa Avadhan Reddy</h5>
+        <p class="text-muted small">Developer</p>
+      </div>
+      <div class="col-md-2 mb-2">
+        <img src="{% static 'images/profiles/238R5A0512.jpeg' %}" alt="Founder" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+        <h5 class="fw-semibold mb-1">L Varsha</h5>
+        <p class="text-muted small">Developer</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

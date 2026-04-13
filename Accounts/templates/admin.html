@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Admin Login | AI Eval{% endblock title %}
+{% load static %}
+
+{% block adminactive %}active{% endblock adminactive %}
+
+{% block body %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+{% endblock extra_css %}
+<div class="page-container">
+    <!-- LEFT: FORM -->
+    <div class="left-form">
+        <div class="wrapper">
+            <div class="title-text">
+                <div class="title login">Admin Login</div>
+            </div>
+
+            {{data}}
+
+            <div class="form-container">
+                
+                <div class="form-inner">
+                    <form action="" method="POST" class="login">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="login">
+                        <div class="field">
+                            <input type="text" name="username" value="{{username}}" placeholder="username" required>
+                        </div>
+                        <div class="field">
+                            <input type="password" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="pass-link"><a href="#">Forgot password?</a></div>
+                        <div class="field btn">
+                            <div class="btn-layer"></div>
+                            <input type="submit" value="Login">
+                        </div>
+                        <div class="signup-link">Not a member? <a href="#">Signup now</a></div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: JSON / LOTTIE -->
+    <div class="right-json">
+        <lottie-player 
+            src="{% static 'animation/admin.json' %}"  
+            background="transparent"  
+            speed="1"  
+            loop  
+            autoplay>
+        </lottie-player>
+    </div>
+
+</div>
+
+<script src="{%static 'javascript/student.js'%}"></script>
+
+{% endblock body %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile | AI Eval{% endblock title %}
+
+{% block body %}
+<div class="container mt-5">
+
+  <!-- Profile Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body d-flex align-items-center">
+        {% if request.user.student_profile.profile_image %}
+            <img src="{{ request.user.student_profile.profile_image.url }}" 
+                class="rounded-circle me-4" width="100" height="100" alt="Profile Picture">
+        {% else %}
+            <img src="{% static 'images/image.png' %}" 
+                class="rounded-circle me-4" width="100" height="100" alt="Default Profile">
+        {% endif %}
+        <div>
+        <div>
+            <h3 class="mb-1">{{ request.user.first_name }} {{ request.user.last_name }}</h3>
+            <p class="text-muted mb-2">@{{ request.user.username }}</p>
+            <p class="mb-1"><strong>Email:</strong> {{ request.user.email }}</p>
+            <p class="mb-1"><strong>Phone:</strong> {{ request.user.phone|default:"Not provided" }}</p>
+            {% if login_method == "google" %}
+                <p><strong>Login Method:</strong> Google</p>
+                <p><strong>Google Email:</strong> {{ social_account.extra_data.email }}</p>
+            {% else %}
+                <p><strong>Login Method:</strong> Username & Password</p>
+            {% endif %}
+            <small class="text-secondary">Joined: {{ request.user.date_joined|date:"d M Y" }}</small>
+        </div>
+    </div>
+    
+  </div>
+</div>
+{% endblock body %}

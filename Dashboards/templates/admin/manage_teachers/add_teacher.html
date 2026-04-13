@@ -1,0 +1,42 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_teachers_active %}active{% endblock manage_teachers_active %}
+
+{% block admin_content %}
+<div class="container mt-4">
+
+<h2>Add Teacher</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input name="username" placeholder="Username" class="form-control mb-2">
+    <input name="email" placeholder="Email" class="form-control mb-2">
+    <input name="password" type="password" placeholder="Password" class="form-control mb-2">
+    <input name="phone" placeholder="Phone" class="form-control mb-2">
+
+    <input name="department" placeholder="Department" class="form-control mb-2">
+
+    <!-- COURSES -->
+    <label>Courses</label>
+    <select name="courses" multiple class="form-control mb-2">
+        {% for course in courses %}
+            <option value="{{ course.id }}">{{ course.name }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- CLASSES -->
+    <label>Classes</label>
+    <select name="classes" multiple class="form-control mb-2">
+        {% for c in classes %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="file" name="profile_image" class="form-control mb-2">
+
+    <button class="btn btn-success">Add Teacher</button>
+
+</form>
+
+</div>
+{% endblock %}

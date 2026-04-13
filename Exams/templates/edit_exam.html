@@ -1,0 +1,106 @@
+{% extends "teacher/teacher_base.html" %}
+
+{% block teacher_content %}
+
+<div class="container mt-4">
+    <h2>Edit Exam</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="text" name="title" value="{{ exam.title }}" class="form-control mb-2">
+        <input type="text" name="course" value="{{ exam.course.name }}" class="form-control mb-2" readonly>
+
+        <input type="number" name="total_marks" value="{{ exam.total_marks }}" class="form-control mb-2">
+
+        <input type="datetime-local" name="date"
+               value="{{ exam.date|date:'Y-m-d\\TH:i' }}"
+               class="form-control mb-2">
+
+        <textarea name="instructions" class="form-control mb-2">
+            {{ exam.instructions }}
+        </textarea>
+
+        <!-- ✅ QUESTION PAPER -->
+        <label>Upload Question Paper</label>
+        <div id="qp-name" class="mb-1 text-success">
+            {% if exam.question_paper %}
+                Current: {{ exam.question_paper.name|cut:"exams/" }}
+            {% endif %}
+        </div>
+
+        {% if exam.question_paper %}
+            <div class="form-check mb-2">
+                <input type="checkbox" name="delete_qp" class="form-check-input">
+                <label class="form-check-label text-danger">Delete current Question Paper</label>
+            </div>
+        {% endif %}
+
+        <div id="drop-area-qp" class="border p-4 text-center mb-3" style="cursor:pointer;">
+            <p>Drag & Drop or Click</p>
+            <input type="file" name="question_paper" id="fileElem-qp" hidden>
+        </div>
+
+        <!-- ✅ ANSWER KEY -->
+        <label>Upload Answer Key</label>
+        <div id="ak-name" class="mb-1 text-success">
+            {% if exam.answer_key %}
+                Current: {{ exam.answer_key.name|cut:"exams/" }}
+            {% endif %}
+        </div>
+
+        {% if exam.answer_key %}
+            <div class="form-check mb-2">
+                <input type="checkbox" name="delete_ak" class="form-check-input">
+                <label class="form-check-label text-danger">Delete current Answer Key</label>
+            </div>
+        {% endif %}
+
+        <div id="drop-area-ak" class="border p-4 text-center mb-3" style="cursor:pointer;">
+            <p>Drag & Drop or Click</p>
+            <input type="file" name="answer_key" id="fileElem-ak" hidden>
+        </div>
+
+        <button class="btn btn-success">Update</button>
+        <a href="{% url 'teacher_exams' %}" class="btn btn-secondary">Cancel</a>
+
+    </form>
+</div>
+
+<script>
+function setupDropArea(dropAreaId, inputId, displayId) {
+    const dropArea = document.getElementById(dropAreaId);
+    const fileInput = document.getElementById(inputId);
+    const display = document.getElementById(displayId);
+
+    dropArea.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            display.innerHTML = "Selected: " + fileInput.files[0].name;
+        }
+    });
+
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.style.background = '#f8f9fa';
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.style.background = 'white';
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        display.innerHTML = "Selected: " + e.dataTransfer.files[0].name;
+    });
+}
+
+// 🔥 Initialize both
+setupDropArea('drop-area-qp', 'fileElem-qp', 'qp-name');
+setupDropArea('drop-area-ak', 'fileElem-ak', 'ak-name');
+
+</script>
+
+{% endblock %}

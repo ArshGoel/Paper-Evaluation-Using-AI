@@ -1,0 +1,169 @@
+{
+    "pages": [
+        {
+            "page": 1,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 1: Part-A\nA- Apache Hadoop is a tool which is used for data analysis.\n* It helps us to retrieve & get the data.\n* It helps us to keep data in organised format.\n\nQuestion 2: Data Serialization\nA- Data Serialization is a process where we keep the data in organised manner.\n* It gives a node to each block.\n* We can identify the data with the key value.\n* Later... the data is arranged in ascending or descending order.\n* Data is arranged as per Serial Number."
+        },
+        {
+            "page": 2,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 3: Hadoop\nA- Hadoop is Java based software which is used for data analysis.\n* It helps in various data analytics techniques.\n* It is used for data cleaning also.\n* It helps us to retrieve & get the data.\n* It helps us to keep data in organised format.\n\nQuestion 4: Data Node\nA- Data Node is most important component in HDFS daemons.\n* It comes in third position after the Name Node & Secondary Node.\n* It helps us to assign Nodes for the data.\n* We can retrieve data in that manner."
+        },
+        {
+            "page": 3,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 5: Machine learning\nA- ML is a technique where we provide external training to particular model.\n* Based on the training the model provide accurate decisions.\n* It also provides results as per the accuracy.\n* It helps in doing repetitive tasks & automate the human tasks.\n* Types of machine learning techniques:\n1) Supervised learning\n2) Unsupervised learning\n3) Semi supervised learning\n4) Reinforcement learning"
+        },
+        {
+            "page": 4,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 6: Part-B\nHDFS daemons\nA- HDFS - Hadoop distributed File System.\n* It is a tool which is used for data analysis.\n* It helps us to retrieve & get the data.\n* It helps us to keep data in organised format.\n* It works with different Software where we perform different operations.\n* It also helps in various data analytics techniques.\n* It also helps in data Cleaning, data processing, pre-processing.\n* There are various components which helps in it."
+        },
+        {
+            "page": 5,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 6 (continued): Various components.\n1) Name Node\n2) Secondary Node\n3) Data Node\n4) Resource Manager\n5) Node manager.\n\n[Diagram: Block diagram showing Name Node connected to Secondary Node and Data Node. Secondary Node and Data Node are connected to Resource Manager and Node Manager.]\n\n* Name Mode\n* Name Node is used to assign the Name to the node.\n* It is one of the main components in HDFS.\n* It is the first component in the HDFS.\n* From here only data takes entry.\n* It responsible for input process."
+        },
+        {
+            "page": 6,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 6 (continued): * Secondary Mode\n* It is mainly used to provide backup for Name Node.\n* It is also used to merge with Name Node & Support in absence.\n* Input format: $<$Key: Value$>$ , $<$Key_2: Value_2$>$\n* Output format: $<$Key: Value$>$\n\n* Data Node\n* It come in third place after the Name node & Secondary Node.\n* It helps us to assign nodes for the data.\n* We can easily retrieve data in that manner.\n* Data is retrieved easily with the key. value.\n* Data is arranged as per the serial."
+        },
+        {
+            "page": 7,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 6 (continued): number in ascending or descending order..\n\n* Resource Manager\n* It provides all the important Resources required for hard & Software required.\n* It make necessary arrangements if anything is missing.\n* It manages with all the resources.\n\n* Node Manager\n* It manages all the nodes.\n* It helps in coordination with other components & the nodes.\nA. It is used to maintain data with different nodes.\n* It helps with memory & data management."
+        },
+        {
+            "page": 8,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 8: Machine learning techniques\nA- ML is a technique where we provide external training to particular model.\n* Based on the training the model provide accurate decisions.\n* It also provides results as per the accuracy.\n* It helps in doing repetitive tasks & automate the human tasks.\n* Types of ML techniques:\n1) Supervised learning\n2) Unsupervised learning\n3) Semi Supervised learning\n4) Reinforcement learning"
+        },
+        {
+            "page": 9,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 8 (continued): * Supervised learning.\n* Here the model is trained with Various data sets.\n* It takes the data as per the dataset.\n* It is trained as per classified data.\n* It is used when there are enough data sets.\nEx- House price prediction.\n\n* Unsupervised learning\n* Here the model is not trained with dataset.\n* Here we give new data as raw data for training purpose.\n* We might get different results for it.\nEx- Detection of Cyber bullying."
+        },
+        {
+            "page": 10,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 8 (continued): * Semi Supervised learning\n* This technique is combination of both.\n* Here the model is trained with new data & old datasets as well.\n* It takes both old data & new data.\n* It can be trained as per the dataset which results in various results.\n* We might also get different results.\nEx- loan approval prediction System.\n\n* Reinforcement learning.\n* It is a special condition for ML.\n* Here we automate the tasks as per the requirements.\n* It is used for IOT Purpose also.\n* Ex- Human Scream detection using deep learning."
+        },
+        {
+            "page": 11,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 9: Social Media Analytics\nA- Social Media Analytics plays a very important role in day to day life.\n* Many people use social media every day.\n* Apps like instagram, facebook etc.\n* It tracks our usage.\n* It controls our activities.\n* It also collects our data for further usage.\n* It is used in every Social media Platform.\n* It reduces cyberbullying in social media.\n* Also reduces cyber crimes.\n* We can report fake account easily."
+        },
+        {
+            "page": 12,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 9 (continued): Importance\n* To track our usage.\n* To Limit overuse.\n* To Reduce cyber bullying.\n* It reduces Cyber crimes.\n* It helps to report fake accounts.\n\nApplications\n* Targeted ads - Show only required ads.\n* Customer acquisition - To acquire more ads.\n* Feedback - To provide feedbacks.\n* Product Recommendation - To recommend the product as per the requirements.\n* Market analysis - To analyze different products."
+        },
+        {
+            "page": 13,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10: | Traditional Analytics | Big data Analytics |\n|"
+        },
+        {
+            "page": 14,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10 (continued): Ex- Post office | Ex- Data Science company\n\n* Traditional Analytics\n* It does not uses R programming.\n* It uses manual process.\n* More paper work.\n* Labour work.\n\n* Big data Analytics\n* It uses R programming.\n* Along with R it uses various languages like python.\n* Less paper work.\n* No labour work."
+        },
+        {
+            "page": 15,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 98,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 10 (continued): R programming\n* It is a Scripting language similar to python.\n* It is used for data analysis.\n\n[Graph: A line starting from the top-left and decreasing linearly towards the bottom-right corner.]"
+        }
+    ]
+}

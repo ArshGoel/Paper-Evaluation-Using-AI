@@ -1,0 +1,43 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_classes_active %}active{% endblock manage_classes_active %}
+{% block admin_content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between">
+        <h2>Classes</h2>
+        <a href="{% url 'add_class' %}" class="btn btn-primary">+ Add Class</a>
+    </div>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Year</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for c in classes %}
+            <tr>
+                <td>{{ c.name }}</td>
+                <td>{{ c.year }}</td>
+                <td>
+                    <a href="{% url 'edit_class' c.id %}" class="btn btn-warning btn-sm">Edit</a>
+
+                    <form action="{% url 'delete_class' c.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No classes found</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

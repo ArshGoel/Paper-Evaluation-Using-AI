@@ -1,0 +1,40 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Results{% endblock %}
+{% block view_results_active %}active{% endblock view_results_active %}
+{% block admin_content %}
+<div class="container mt-4">
+
+    <h2>Evaluation Results</h2>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Exam</th>
+                <th>Marks</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for sub in submissions %}
+            <tr>
+                <td>{{ sub.student.username }}</td>
+                <td>{{ sub.exam.title }}</td>
+
+                <!-- ✅ Marks -->
+                <td>
+                    {% if sub.evaluation %}
+                        {{ sub.evaluation.total_score }}
+                    {% else %}
+                        Not Evaluated
+                    {% endif %}
+                </td>
+
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

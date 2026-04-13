@@ -1,0 +1,377 @@
+/* =========================
+   GLOBAL STYLES
+========================= */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f2ed;
+    font-family: 'Poppins', sans-serif;
+}
+/* =========================
+   NAVBAR FIXED
+========================= */
+.navbar {
+    background-color: #000 !important;
+    padding: 12px 40px; /* FIXED */
+}
+
+/* Proper alignment */
+.navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Center nav links */
+.navbar-nav {
+    margin: 0 auto;
+}
+
+/* Nav links spacing */
+.nav-link {
+    padding: 6px 12px;
+    margin: 0;
+}
+
+/* =========================
+   MOBILE FIX (IMPORTANT)
+========================= */
+@media (max-width: 992px) {
+    .navbar {
+        padding: 10px 15px;
+    }
+
+    /* REMOVE row force */
+    .navbar-nav {
+        flex-direction: column !important;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .nav-link {
+        margin: 8px 0;
+    }
+
+    .navbar-collapse {
+        background-color: #000;
+        padding: 10px;
+    }
+}
+
+/* =========================
+   NAV LINKS
+========================= */
+.nav-link {
+    color: #fff !important;
+    font-weight: 400;
+    margin: 0 12px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* underline animation */
+.nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: currentColor;
+    transition: width 0.3s ease;
+}
+
+/* hover */
+.nav-link:hover {
+    color: #ddd !important;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* active */
+.nav-link.active {
+    color: #ffc107 !important;
+}
+
+.nav-link.active::after {
+    width: 100%;
+    background-color: #ffc107;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn-login {
+    color: #fff;
+    background: transparent;
+    border: 1px solid #fff;
+    padding: 6px 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #ffc107;
+    color: #000;
+    border-color: #ffc107;
+}
+
+/* =========================
+   ICONS (CART / WISHLIST)
+========================= */
+.wishlist,
+.cart {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 15px;
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: red;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+/* =========================
+   LINKS (GLOBAL)
+========================= */
+a {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 0;
+    bottom: -2px;
+    background: currentColor;
+    transition: width 0.3s ease;
+}
+
+a:hover {
+    color: #ccc;
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+/* =========================
+   MODAL / AUTH FORM
+========================= */
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.auth-form .form-control {
+    padding: 12px 10px;
+    border: 1px solid #ced4da;
+    font-size: 14px;
+}
+
+.input-group-text {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+}
+
+.auth-form .btn {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Close Button */
+.custom-close-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: #fff;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+.custom-close-button:hover {
+    background: #f2f2f2;
+    transform: scale(1.1);
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+@media (max-width: 992px) {
+    .navbar {
+        padding: 12px 20px;
+    }
+
+    .navbar-collapse {
+        background-color: #000;
+        padding: 10px;
+    }
+
+    .navbar-nav {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .nav-link {
+        margin: 8px 0;
+    }
+}
+
+.footer {
+  background-color: #101010;
+  color: #f5f5f5;
+  padding: 50px 20px 20px;
+  font-family: 'Poppins', sans-serif;
+  /* position: relative; */
+  overflow: hidden;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-column {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+
+.footer-column h3,
+.footer-column h4 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin: 0.5rem 0;
+}
+
+.footer-column ul li a {
+  color: #f5f5f5;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.footer-column ul li a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background-color: #ffc107 ;
+  transition: width 0.3s ease;
+}
+
+.footer-column ul li a:hover::after {
+  width: 100%;
+}
+
+.footer-column ul li a:hover {
+  color: #ffc107 ;
+}
+
+.footer-column ul li a[href*="facebook.com"] :hover {
+  color: #1877F2;
+}
+
+.social-icons a:hover {
+  color: #fa0cb6;
+  transform: translateY(-3px);
+}
+.social-icons a {
+  color: white; /* default icon color */
+  margin-right: 15px;
+  font-size: 24px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Facebook hover - blue + underline */
+.social-icons a[href*="facebook"]:hover {
+  color: #1877f2; /* Facebook blue */
+}
+
+.social-icons a[href*="facebook"]:hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background-color: #1877f2;
+}
+
+.social-icons a[href*="youtube"]:hover {
+  color: #ff0000; /* Facebook blue */
+}
+
+.social-icons a[href*="youtube"]:hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background-color: #ff0000;
+}
+
+.footer-bottom {
+  border-top: 1px solid #333;
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-column {
+    margin-bottom: 2rem;
+  }
+
+  .social-icons a {
+    margin: 0 8px;
+  }
+}

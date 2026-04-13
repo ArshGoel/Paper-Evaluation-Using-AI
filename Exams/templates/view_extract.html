@@ -1,0 +1,101 @@
+<!-- templates/exam/view_extract.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Extract Viewer</title>
+
+    <style>
+        body { font-family: Arial; background: #111; color: #eee; }
+        .container { padding: 20px; }
+        .box { background: #1e1e1e; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        button { margin: 5px; padding: 8px 12px; }
+        select { padding: 6px; }
+        .hidden { display: none; }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h2>📄 Extract Viewer</h2>
+
+    <!-- 🔽 Student Info -->
+    <form method="get" action="">
+        <label>Student:</label>
+        <select onchange="window.location.href=this.value">
+            {% for sub in submission.exam.submission_set.all %}
+                <option value="{% url 'view_extract' sub.id %}"
+                    {% if sub.id == submission.id %}selected{% endif %}>
+                    {{ sub.student }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+    <p><b>Exam:</b> {{ submission.exam }}</p>
+
+    <!-- 🔽 Version Switch -->
+    <form method="get">
+        <label>Version:</label>
+        <select name="version" onchange="this.form.submit()">
+            {% for v in versions %}
+                <option value="{{ v.id }}" {% if v.id == extract_version.id %}selected{% endif %}>
+                    v{{ v.version_number }} {% if v.is_best %}(Best){% endif %}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <!-- 🔥 TOGGLE -->
+    <div>
+        <button onclick="showPageView()">📄 Page View</button>
+        <button onclick="showQuestionView()">❓ Question View</button>
+    </div>
+
+    <!-- ================= PAGE VIEW ================= -->
+    <div id="pageView">
+        <h3>📄 Page-wise View</h3>
+
+        {% for page in json_data.pages %}
+            <div class="box">
+                <h4>Page {{ page.page }}</h4>
+
+                <p><b>Language:</b> {{ page.primary_language }}</p>
+                <p><b>Confidence:</b> {{ page.confidence_score }}</p>
+
+                <pre>{{ page.content }}</pre>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- ================= QUESTION VIEW ================= -->
+    <div id="questionView" class="hidden">
+        <h3>❓ Question-wise View</h3>
+
+        {% for q in questions %}
+            <div class="box">
+                <h4>Q{{ q.question_number }}</h4>
+
+                <p><b>Diagram:</b> {{ q.contains_diagram }}</p>
+
+                <pre>{{ q.answer_text }}</pre>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+function showPageView() {
+    document.getElementById("pageView").style.display = "block";
+    document.getElementById("questionView").style.display = "none";
+}
+
+function showQuestionView() {
+    document.getElementById("pageView").style.display = "none";
+    document.getElementById("questionView").style.display = "block";
+}
+</script>
+
+</body>
+</html>

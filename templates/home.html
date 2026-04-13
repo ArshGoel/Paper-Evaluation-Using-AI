@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}AI Eval{% endblock title %}
+{% block homeactive %}active{% endblock homeactive %}
+
+{% block body %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <!-- Hero Section -->
+    <section class="hero ai-hero">
+        <div class="container">
+            <div class="hero-content">
+
+                <!-- LEFT: TEXT -->
+                <div class="hero-text">
+                    <h1>POWERED BY <span>AI EVAL</span></h1>
+                    <p>Experience next-gen intelligence with precision insights, automated evaluations, and smarter decision-making—all driven by advanced AI algorithms.</p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'slogin' %}" class="btn btn-primary">EXPLORE NOW</a>
+                    </div>
+                </div>
+
+                <!-- RIGHT: IMAGE -->
+                <div class="hero-image">
+                    <img src="{% static 'images/logo.png' %}" 
+                        alt="AI Eval futuristic engine analyzing data streams and generating intelligent insights">
+                </div>
+
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+{% endblock body %}

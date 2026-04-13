@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contact Us - AI Eval{% endblock %}
+{% block contactusactive %}active{% endblock contactusactive %}
+
+{% block body %}
+{% block extracss %}
+<link rel="stylesheet" href="{% static "css/contactus.css" %}" />
+{% endblock extracss %}
+<section class="container py-5">
+    <h2 class="text-center mb-4">Get in Touch</h2>
+    <p class="text-center mb-5" style="max-width: 600px; margin: auto; font-size: 1.1rem;">
+        Whether you have a question about the project or need assistance, our team is ready to help you!
+    </p>
+
+    <div class="row g-5">
+        <!-- Contact Form -->
+        <div class="col-md-6">
+            <form method="POST" action="" class="shadow p-4 rounded bg-light">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" name="name" id="name" class="form-control" placeholder="John Doe" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Your Email</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" name="subject" id="subject" class="form-control" placeholder="Project Issue" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea name="message" id="message" class="form-control" rows="5" placeholder="Type your message..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-dark w-100">Send Message</button>
+            </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="col-md-6">
+            <div class="bg-dark text-white h-100 p-4 rounded">
+                <h4>Contact Information</h4>
+                <p class="mb-2"><i class="bi bi-envelope me-2"></i> arshgoel16@gmail.com</p>
+                <p class="mb-2"><i class="bi bi-telephone me-2"></i> +91 9398483706</p>
+                <p class="mb-4"><i class="bi bi-geo-alt me-2"></i> Hyderabad, Telangana, India</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

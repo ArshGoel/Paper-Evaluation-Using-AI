@@ -1,0 +1,169 @@
+{
+    "pages": [
+        {
+            "page": 1,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "next page"
+        },
+        {
+            "page": 2,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 1A):\nThe inputs and outputs of MapReduce are in key-address/value pairs\nInput: key-address/value pair\nkey contains the block number and address contain the operations and data to be performed\noutput: key, value address pair\nkey contains id and value block contains output result\n\nQuestion 28):\nThe data in Hadoop is moved in and out by HDFS (Hadoop distributed file structure/system).\nHDFS has features which is able to move data in and out in Hadoop.\n\nQuestion 30):\nWhen Name-node storage is completed we use Secondary Name-node which has all functions of primary name node. Collects all the meta data of data nodes and activates check points and saves the edit logs and fsImage."
+        },
+        {
+            "page": 3,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 40):\nSupervised learning is a type of machine learning technique in which the machine (computer) is trained on labeled data. The data contains the solution and new test data is given to it.\nEn: 1) classification\n2) Regression.\n\nQuestion 5A):\nTwo applications of R:\n1) Social media analytics.\n2) mobile application analytics.\n3) Data visualization\nR provides number of packages for Social media analytics and APIs.\nR applications are such as data visualization, Real-time market analysis etc."
+        },
+        {
+            "page": 4,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 60):\nWorking of HDFS daemons:\ndaemon = process\nThere are 5 HDFS daemons (process):\na) Name node\nb) Data node\nc) Secondary name node\nd) Resource Manager\ne) Backup node\n\na) Name-node: Name-node is a master process. Name node contains all the information about data nodes. It contains all the meta data about all existing nodes in the System. Name node uses edit logs and fsImage features to keep track of all the transactions in hdfs system.\nEdit Logs: This stores the information about all edits / updates made in data nodes with time stamp.\nFsImage: This stores the updated meta data changes made and stored as images.\n\nb) Data node: Data-node is slave process. Data node works as per instructions of Name-node."
+        },
+        {
+            "page": 5,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 60) (continued):\nData nodes contains all the data in the file system. Data nodes specify the operations to be performed. We have replicas of data nodes in case if the data node failed or crashed we can use replica data node so there is no stopping in process execution.\n\nc) Secondary Name-node:\nAs name suggests Secondary name node is used when the storage in primary name node is completed.\n[Diagram: Flowchart showing Secondary name node \u2192 Name-node, with \"update edit logs in name node\" flowing to FsImage \u2192 update FsImage \u2192 fsImage]\nSecondary name node does the same work as primary name-node. It collects the meta data of data nodes and stores and also updates the edit logs & transactions occurred in data nodes."
+        },
+        {
+            "page": 6,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": true,
+            "content": "Question 60) (continued):\nd) Resource-Manager: Resource manager allocates and tracks all the resources for on going process execution.\n* Application manager: It manages the required data and components for application to complete the execution.\n* Scheduler: It schedules the resources allocation timmings.\n\ne) Back-up Node: Back-up Node is used for High availability data. The data from data node is replicated into a backup node when the data node is failed the backup node is exchanged as data node and the failed data node becomes Back-up node.\n\nSyntax\n1) Name node:\nHadoop-daemon sh. start Name node (for starting)\nHadoop-daemon sh.stop Name node (for stopping)\n2) Data Node:\nHadoop-daemon sh. start data node\nHadoop-daemon sh. stop data node\n3) Secondary name node:\nHadoop-daemon sh. start secondary name node\n4) Resource Manager:\nHadoop-daemon sh.start resource Manager."
+        },
+        {
+            "page": 7,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 7A):\nHadoop Distributed file System (HDFS) is a file system used for handling and processing very large data sets.\nHDFS is a non-relational database and no-sql database.\nHDFS offers reliability, scalability, security, data serialization and speed etc.\nHDFS Architecture\n[Diagram: HDFS Architecture diagram showing:\nClient connected to Name node (meta data ops) and also to Data nodes (write, read operations).\nName node connected to Metadata (name/address/data--3) and to Data nodes (Black ops).\nData nodes arranged in two racks (Rack 1, Rack 2) with replication indicated between them.]"
+        },
+        {
+            "page": 8,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 7A) (continued):\nHDFS Components:\nName node: Name node is a master process which contains all the meta data about existing data nodes.\nName node only stores the block names, id's of block and their address.\nName node takes more ram because it needs to be speed at operations.\nHDFS also has Secondary name node which is used when storage in primary name node is used completely.\n\nData nodes: Data nodes are slave process.\nData nodes are to be followed instructions given by name node.\nData node contains all the data in ent-3 or ext-4 format.\nData nodes also has replicas of it in case if any failure occurs the replicated data node is then used for performing operations.\n\nClient: clients are the users whose data is also stored in name nodes. clients / users tells the hdfs to perform what operations and how. clients performs read and write operations which is updated in file System simultaneously."
+        },
+        {
+            "page": 9,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 7A) (continued):\nReplication: Replication is a process of duplicating existing data nodes and stored in various clusters as such even one data node is failed operations should be continued by using replicas of that failed data node.\n\nRead: The read operation is performed by client where the name node gives the respective address of data blocks that contains the required data.\n\nWrite: Write operation is performed and the changes are stored in edit logs and check points at hourly basis such that the data should be reliable.\n\nResource Manager: Resource manager takes care of required resources by the application to complete the given task.\n\nAdvantages of HDFS:\n1) HDFS is scalable so it can handle large data sets.\n2) HDFS provides back-up data in case crash occurred.\n3) HDFS is speed and cost efficient."
+        },
+        {
+            "page": 10,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 10):\nMachine learning: Machine Learning is a process of teaching a machine (computer) to make decisions, develop and identify patterns without being explicitly coded or programmed for it.\nmachine learning primarily has 4 learning techniques:\n[Diagram: Flowchart titled \"Machine Learning\" branching into four boxes: Supervised learning, Un-supervised learning, Semi-supervised learning, Reinforcement learning]\n\n1) Supervised Learning: Supervised learning is a type of machine learning in which the machine (computer) is taught or fed with labeled data.\nThe machine is taught or trained on Structured data directly then given the test data to perform the operations on it.\n* classification: classification is a technique in which the data points or entities are classified into their own classes.\n* Regression: Regression is a technique which"
+        },
+        {
+            "page": 11,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10) (continued):\nuses past data outputs as models and give current input.\n\nSupervised learning Examples:\n1) classification\n2) Logistic regression.\n3) Naive Bayse's\n4) Decision tree\n\n2) Un-supervised learning: Un-supervised learning is a type of machine learning technique where machine (computer) is taught / trained on un-labeled data.\nUn-structured data is used for training the machine and algorithms are used for obtaining results in test data.\n* Clustering: clustering is a technique in which the data points / entities are divided and separated into groups containing similar points.\n* Association: Association is a technique used to make rules and generate patterns on given data. Such as market basket analysis. or customer behaviour pattern such as if a man buys bread he will also buy milk."
+        },
+        {
+            "page": 12,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 10) (continued):\nUn-Supervised learning examples:\n1) clustering\n2) k-nn algorithm\n3) K-means algorithm\n4) market basket analysis\n\n3) Semi-supervised learning: Semi-supervised learning is a type of machine learning technique in which the machine (computer) is trained both on labeled and un-labeled data.\nSemi-supervised learning trains both on Structured and un-structured data.\n\n4) Reinforcement Learning: Reinforcement learning is a technique in which the machine learns from environment and its current position. Reinforcement learning learns through feedbacks from steps.\nReinforcement learning uses rewards and punishments to train the machine and make it understand the ideal steps to be performed.\nEn: 1) chess\n2) N-Queen problem\nReinforcement Learning are used in puzzle solving games too!"
+        },
+        {
+            "page": 13,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 11):\nSocial media Analytics is analytics of data collected from various social media platforms.\nMany companies make social media analytics to understand the market trend & customer behaviour patterns to improve their products.\nR provides number of packages supporting social media analysis tools.\n\n1) Data collection: The data is collected from various social media platforms. R provides packages such as \"rtweet\" or \"Twitter\" for accessing or collecting data from twitter. It also has \"facebook\" & \"linkedin\" for collecting data from facebook and linkedin.\nMany applications provide APIs for developers to collect the public data.\n\n2) Data pre-processing: After collecting huge data the data needs to be processed and cleaned from errors / outliers, missing values and normalize the text.\nR provides packages such as \"tm\" & \"tidytext\" for data pre-processing.\n\n3) Sentiment Analysis: Sentiment Analysis is made on processed data by using packages such"
+        },
+        {
+            "page": 14,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 11) (continued):\nas \"tidytext\" & \"Sentiment\": The sentiment analysis gives the output as the sentiment of the posts such as positive, negative and neutral.\n\n4) Network Analytics: Networks in social media is very complex as connections are various such as following & followers or friends & different groups and communities.\nNetwork analytics gives the clear picture about users community and environment uses \"Network D3\" & \"igroup\" packages.\n\n5) Topic Modeling:\nR provides packages such as \"topic model\" & \"ldatuning\" for topic modeling. This analytics are made on what hot topics are being discussed in social media which is linked with current trends.\n\n6) Real-time Marketing: Real-time marketing is making analysis on real-time data such as users dashboard. What users are currently interested in and what is the current market trend.\n\nImportance\nSocial media analytics is very important as it gives lot of insights for companies"
+        },
+        {
+            "page": 15,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 95,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 11) (continued):\non their customers and users.\nBy doing social media analysis one can understand market trends and be in first at race.\n\nApplications\n1) market trends\n2) E-kart recommendations.\n3) personalised recommendations."
+        }
+    ]
+}

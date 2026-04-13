@@ -1,0 +1,175 @@
+{% extends "teacher/teacher_base.html" %}
+
+{% block teacher_content %}
+
+<div class="container mt-4">
+
+    <h2>{{ exam.title }}</h2>
+    <p><strong>Course:</strong> {{ exam.course.name }}</p>
+    <p><strong>Total Marks:</strong> {{ exam.total_marks }}</p>
+    <p><strong>Date:</strong> {{ exam.date }}</p>
+
+    <hr>
+
+    <h4>Instructions</h4>
+    <p>{{ exam.instructions }}</p>
+
+    <hr>
+
+    <!-- CSRF token for JS -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    {% for part, questions in grouped_questions.items %}
+        <h3 class="mt-4">Part {{ part }}</h3>
+
+        {% for q in questions %}
+            <div class="card mb-3 p-3 shadow-sm">
+
+                <strong>Q{{ q.question_number }} ({{ q.marks }} marks)</strong>
+                <p>{{ q.text }}</p>
+
+                <!-- ✅ Question Images -->
+                {% if q.images.all.count %}
+                    <div class="mb-2">
+                        <strong>Diagrams:</strong>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            {% for img in q.images.all %}
+                                <a href="{{ img.image.url }}" target="_blank">
+                                    <img src="{{ img.image.url }}"
+                                         class="img-thumbnail"
+                                         style="width:150px;">
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- ✅ Upload Question Images -->
+                <form method="POST" enctype="multipart/form-data"
+                      action="{% url 'upload_question_image' q.id %}">
+                    {% csrf_token %}
+                    <input type="file" name="images" multiple class="form-control mb-2" accept="image/*">
+                    <button class="btn btn-sm btn-primary">Upload Diagram/Table</button>
+                </form>
+
+                <!-- ✅ Paste Area -->
+                <div class="paste-box border rounded p-3 text-center bg-light mt-2"
+                     data-id="{{ q.id }}"
+                     data-type="question"
+                     style="cursor:pointer;">
+                    📋 Click here → Press Ctrl + V to paste image
+                </div>
+
+                <!-- ✅ Sub Questions -->
+                {% if q.sub_questions.all.count %}
+                    <ul class="mt-3">
+                        {% for sub in q.sub_questions.all %}
+                            <li class="mb-2">
+
+                                <strong>({{ sub.label }})</strong>
+                                {{ sub.text }}
+
+                                {% if sub.marks %}
+                                    - {{ sub.marks }} marks
+                                {% endif %}
+
+                                <!-- ✅ Sub Images -->
+                                {% if sub.images.all.count %}
+                                    <div class="mt-2 d-flex flex-wrap gap-2">
+                                        {% for img in sub.images.all %}
+                                            <a href="{{ img.image.url }}" target="_blank">
+                                                <img src="{{ img.image.url }}"
+                                                     class="img-thumbnail"
+                                                     style="width:130px;">
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <!-- ✅ Upload SubQuestion Images -->
+                                <form method="POST" enctype="multipart/form-data"
+                                      action="{% url 'upload_subquestion_image' sub.id %}">
+                                    {% csrf_token %}
+                                    <input type="file" name="images" multiple class="form-control mb-2" accept="image/*">
+                                    <button class="btn btn-sm btn-secondary">Upload</button>
+                                </form>
+
+                                <!-- ✅ Paste Area -->
+                                <div class="paste-box border rounded p-2 text-center bg-light"
+                                     data-id="{{ sub.id }}"
+                                     data-type="sub"
+                                     style="cursor:pointer;">
+                                    📋 Paste image here
+                                </div>
+
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+</div>
+
+<!-- 🔥 JS for Clipboard Paste -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".paste-box").forEach(box => {
+
+        box.addEventListener("click", () => box.focus());
+
+        box.addEventListener("paste", function (event) {
+
+            const items = event.clipboardData.items;
+
+            for (let item of items) {
+                if (item.type.includes("image")) {
+
+                    const file = item.getAsFile();
+                    const formData = new FormData();
+                    formData.append("images", file);
+
+                    const id = this.dataset.id;
+                    const type = this.dataset.type;
+
+                    let url = (type === "question")
+                        ? `/exam/upload-question-image/${id}/`
+                        : `/exam/upload-subquestion-image/${id}/`;
+
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": getCSRFToken()
+                        },
+                        body: formData
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            location.reload();
+                        } else {
+                            alert("Upload failed ❌");
+                        }
+                    })
+                    .catch(err => console.error(err));
+                }
+            }
+
+        });
+
+    });
+
+});
+
+// ✅ CSRF from cookies
+function getCSRFToken() {
+    return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken'))
+        ?.split('=')[1];
+}
+</script>
+
+{% endblock %}

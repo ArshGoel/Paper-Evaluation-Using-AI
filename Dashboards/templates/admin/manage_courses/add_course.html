@@ -1,0 +1,15 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_courses_active %}active{% endblock manage_courses_active %}
+
+{% block admin_content %}
+
+<div class="container mt-4">
+    <h2>Add Course</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input name="name" placeholder="Course Name" class="form-control mb-2">
+        <input name="code" placeholder="Course Code" class="form-control mb-2">
+        <button class="btn btn-success">Add</button>
+    </form>
+</div>
+{% endblock %}

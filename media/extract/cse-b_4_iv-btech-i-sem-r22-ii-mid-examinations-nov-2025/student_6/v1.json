@@ -1,0 +1,125 @@
+{
+    "pages": [
+        {
+            "page": 1,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 6: HDFS Daemons:-\nDaemon is a process that runs in the background. It is mainly done in the Java. There are various daemons present in Hadoop.\ni) Name Node\nii) Data Node\niii) Secondary Name Node\niv) Resource Node\nv)\n\nWhat is Hadoop?\nHadoop is a free and open source software used for managing & mentoring of huge amount of data. It can handle structured, unstructured, semi-structured data. Hadoop uses the distributed manner to store the large amount of files. Then by Map Reduce it is parallelly processing the files & generating the output.\n\nFeature of Hadoop:-\n\u2022 Can handle large amount of data.\n\u2022 Can visualize large amount of data.\n\u2022 No need of SQL structures i.e No SQL.\n\u2022 Columnar way of storing.\n\nHadoop Daemon:-\n\u2192 It schedules, manages the files in the background.\ni) Name Node:-\nName node is mainly responsible to store the Metadata of file. It don't store the actual content of the file. It is the Master Node. It manages the file name, date of modification, last modified."
+        },
+        {
+            "page": 2,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 6 (continued): in the form of Metadata.\nFeatures of Name node:-\n\u2022 It do not store the actual data of the file.\n\u2022 It increases the memory speed & reduces RAM usage.\n\nii) Data Node:-\nData node is responsible to store the data in HDFS (Hadoop distributed file System). It manages the data present in the file. It is governed by the Name Node. i.e Name Node instruct the data Node when to store the data.\n\niii) Secondary Name Node:-\nIt tells the when the data is present. It is the global Master Node that controls the flow of the Data from Name Node to Data Node. It stores the all the log files in the file called 'fsimage'.\n\n| Hadoop Daemon | Port Number |\n|"
+        },
+        {
+            "page": 3,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 6 (continued): a) Resource Manager:-\nas the name suggests it manages the all Resources present in the Hadoop ecosystem.\n\nb) YARN (Yet another Resource Negotiator):-\nsince, in the Hadoop V1 the resource management & the data processing was the part of Map Reduce due to more amount of data we have to get lot of lag in the processing. as a result from next versions the YARN (Yet another Resource Negotiator) was introduced.\n\n| Hadoop Daemon's | Port Number |\n|"
+        },
+        {
+            "page": 4,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 8: Hadoop Distributed File System (HDFS) architecture:-\nComing to Hadoop architecture it has got various parts such as Jobtracker, Data Node, Name Node, Tracker ID.\nIt is a Master & slave management, where the Master Node has Jobtracker, Data Node, Name Node, Tracker ID. It has various slaves working under the Master Node. Below diagram demonstrate the Hadoop distributed File System (HDFS) Architecture.\n\n[Diagram: A flowchart/block diagram showing a 'Master Node' box containing 'Job Tracker', 'Tracking ID', 'Name Node', 'Data Node', connected to three 'Slaves' each containing 'Tracking ID' and 'Data Node']\n\nMapReduce:- it is a Data Processing unit in the Hadoop ecosystem, which processes the distributed manner files in a parallel way & generates the output.\n\n[Diagram: Block diagram showing Distributed files \u2192 MapReduce \u2192 Parallel Processing]"
+        },
+        {
+            "page": 5,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 8 (continued): Hadoop:- Hadoop is a open source platform that is used to manage the huge amount of data. more over, to be stored in the distributed manner.\n\nJobTracker:- it is used to divide the large number of jobs into smaller jobs & assign it to the tracker id. so that Tracker can give to the respective slave to generate the output.\n\nName Node:- it is used to maintain the all task lives & its works that are given. It gulds the data node.\n\nData Node:- it handles the storing of the data in the HDFS & particular ID given to that slave, it helps in maintaining the data properly."
+        },
+        {
+            "page": 6,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 10: Machine Learning Techniques:-\nMachine learning is a term that trains a model to learn from the data given & then predict the future values based on the trained data. we have various types of Machine learning techniques.\ni) Supervised Learning\nii) Unsupervised Learning\niii) Semi-supervised Learning\niv) Reinforcement Learning.\n\ni) Supervised learning:-\na labelled data is given to the model training. label data means the X & Y coordinates, for example let us consider the 'House Price Prediction'. In this we are giving the labelled data as Price & area of the House in sq feet.\nso, the price is the 'y' as it is the output. & the area is in the input therefore it is 'x'.\n\nTechniques:-\ni) Linear Regression\nii) K-mean Algorithm.\niii) Multi linear Regression.\n\n[Graph: Line chart with 'Price' on Y-axis and 'Area' on X-axis, showing a linear trend labeled 'Linear Regression']"
+        },
+        {
+            "page": 7,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 10 (continued): ii) Unsupervised learning:-\nWe are not giving the labelled data for training. When we give the unlabelled data for training we are training the model using unsupervised learning techniques. for example:- let us consider the 'Recommendation System' where initially we don't have the data of user. So it doesn't show the recommendation.\nOnce, the user starts browsing the web, it keeps on tracing it which is unlabelled data & then recommendation comes based on the searching pattern.\n\n[Diagram: Flowchart showing \"cat, dog, cows, buffaloes\" \u2192 \"unsupervised learning\" \u2192 \"Model\" \u2192 \"cow\"]\n[Diagram: \"cow\" \u2192 Input \u2192 \"Model\" \u2192 \"cow\"]\n\niii) Reinforcement learning:-\nReinforcement learning means learning from mistake.\nfor example:- let us suppose we have a Robot, so, there are two moves 1) step to the right option 2) step to the fire place.\nif the the Robot steps to the fire place he will get the negative positive rewarding. So next time Robot will remember not to step in fire. in the way of Rewards & penalty manner the training method is referred as Reinforcement learning."
+        },
+        {
+            "page": 8,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 11: Social Media Analytics:-\nAnalysing the social trends such as most liked products, most commuted products, will helps the sales person to earn money. So, social media Analytics means analysing the social media produced data & getting a visualization to help the end user.\n\nFeature/Advantages of Social Media Analytics:-\n\u2192 helps to learn the Market.\n\u2192 understand the human/end-user mentality.\n\u2192 helps to understand the future/present needs.\n\u2192 helps in generating revenue.\n\u2192 to understand the Demand & Supply\n\nFor example:-\nlet us take Amazon, it will use the Social Media Analysis in way that it will help the Amazon to learn the most buyed product, most replaced product. so, that Amazon can understand the demand of particular product.\n\nImportance of Social Media Analytics:-\n\u2192 it helps the vendor to understand the demand of particular product & helps to earn the revenue.\n\u2192 helps in generating the revenue.\n\u2192 helps in visualizing the demand in easy way.\n\u2192 understand the present scenario.\n\u2192 If the vendor understand the social media Analytics he will be able to grow & learn from the market."
+        },
+        {
+            "page": 9,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 11 (continued): [Graph: Line graph with 'demand' on Y-axis and 'price' on X-axis, showing an upward trend]\n\nif the vendor understand the above graph he will get to know the effect of price on demand, as a result he will have a proper mindset of the people.\n\n\u2192 visualization helps in the understanding the data clearly."
+        },
+        {
+            "page": 10,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": false,
+            "contains_code": false,
+            "content": "Question 1: The input & outputs of Map Reduce:\nThe input of the MapReduce is the flume, sqoop collected & stored data. flume collects the unstructured data. & sqoop collects the structured data.\nThe output of MapReduce is the list, json form. which is given to the cloudera to plot or visualize the output of MapReduce.\n\nQuestion 2: Data moved in & out of Hadoop:\nThe input of the hadoop is the three types of data i) structured ii) unstructured iii) semi-structured. these input is taken by the flume & sqoop, that is stored in HBase, HDFS.\nThe output is produce in the cloudera to the end user.\n\nQuestion 3: Secondary Name Node:-\n\u2192 it main function of secondary Name Node is to generate/store the logs, if the system fails & then the user will get helped with the log generated every minute.\n\u2192 the log is stored in the file called 'fsimage'.\n\u2192 it is the global master node.\n\u2192 logs are generated every minute in order to avoid the crashes."
+        },
+        {
+            "page": 11,
+            "primary_language": "en",
+            "is_rotation_valid": true,
+            "rotation_correction": 0,
+            "confidence_score": 100,
+            "contains_math": false,
+            "contains_diagram": true,
+            "contains_code": false,
+            "content": "Question 4: Supervised learning:-\nWhen/while training the data we are giving the labelled data this method of training is referred as supervised learning.\n\u2192 technique involves :-\ni) linear regression\nii) classification\niii) Kmean algorithm.\n\n[Graph: Line graph with 'price' on Y-axis and 'Square feet (area)' on X-axis, showing upward linear trend labeled 'linear Regression']\n\nQuestion 5:\ni) Data Analytics using R.\nii) Visualization in R.\n\nthese are the application of R in Data Analytics\nVisualization means converting of raw data into the form of box-plot, histogram, pie charts etc.\n\n[Diagram: A line graph, a bar chart, and a pie chart labeled 'Sports', 'Hobby', 'puzzles']"
+        }
+    ]
+}

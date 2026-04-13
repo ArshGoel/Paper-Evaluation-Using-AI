@@ -1,0 +1,130 @@
+{% extends "teacher/teacher_base.html" %}
+{% load static %}
+
+{% block teacher_content %}
+
+<div class="container mt-4">
+    <h3>{{ exam.title }}</h3>
+    <p><strong>Course:</strong> {{ exam.course.name }}</p>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.username }}</td>
+
+                <!-- STATUS -->
+                <td>
+                    {% if student.submission %}
+                        <span class="text-success">Submitted</span>
+                    {% else %}
+                        <span class="text-danger">Not Submitted</span>
+                    {% endif %}
+                </td>
+
+                <!-- SCORE -->
+                <td>
+                    {% if student.evaluation and student.evaluation.evaluated %}
+                        <span class="badge bg-success">
+                            {{ student.evaluation.total_score }}
+                        </span>
+                    {% else %}
+                        <span class="text-muted">Not Evaluated</span>
+                    {% endif %}
+                </td>
+
+                <!-- ACTIONS -->
+                <td>
+                    {% if student.submission %}
+
+                        <!-- VIEW PDF -->
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary view-pdf-btn"
+                                data-row-id="student-{{ student.id }}"
+                                data-url="{% url 'view_pdf_submission' exam.id 'submission' student.id %}"
+                                data-label="Answer Sheet - {{ student.username }}">
+                            View PDF
+                        </button>
+
+                        <!-- EVALUATE (future) -->
+                        <a href="{% url 'extract_student_sheets' student.submission.id %}" 
+                            class="btn btn-sm btn-warning">
+                            Extract Text
+                        </a>
+                        <a href="{% url 'view_extract' student.submission.id %}" 
+                            class="btn btn-sm btn-warning">
+                            View Extracted Text
+                        </a>
+                        <a href="{% url 'evaluate_submission' student.submission.id %}" 
+                            class="btn btn-sm btn-success">
+                            Evaluate
+                        </a>
+                    {% else %}
+                        <span class="text-muted">No submission</span>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <!-- INLINE PDF VIEWER -->
+            <tr class="pdf-viewer-row d-none" id="pdf-row-student-{{ student.id }}">
+                <td colspan="4" class="p-0">
+                    <div class="pdf-viewer-container" id="pdf-container-student-{{ student.id }}"></div>
+                </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const viewerBase = "{% static 'pdfjs/web/viewer.html' %}";
+
+  function buildViewerHtml(url, label) {
+    return '<div class="border-top py-3">' +
+           '<div class="d-flex justify-content-between align-items-center mb-3">' +
+           '<h5 class="mb-0">' + label + '</h5>' +
+           '<button type="button" class="btn btn-sm btn-secondary" onclick="this.closest(\'tr.pdf-viewer-row\').classList.add(\'d-none\')">Close</button>' +
+           '</div>' +
+           '<iframe src="' + viewerBase + '?file=' + encodeURIComponent(url) + '" ' +
+                   'width="100%" height="600" class="border"></iframe>' +
+           '</div>';
+  }
+
+  document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      const rowId = this.dataset.rowId;
+      const url = this.dataset.url;
+      const label = this.dataset.label;
+
+      const row = document.getElementById('pdf-row-' + rowId);
+      const container = document.getElementById('pdf-container-' + rowId);
+
+      if (!row || !container) return;
+
+      if (container.dataset.currentUrl === url && !row.classList.contains('d-none')) {
+        row.classList.add('d-none');
+        return;
+      }
+
+      container.innerHTML = buildViewerHtml(url, label);
+      container.dataset.currentUrl = url;
+      row.classList.remove('d-none');
+      row.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+});
+</script>
+{% endblock teacher_content %}

@@ -1,0 +1,60 @@
+{% extends "student/student_base.html" %}
+{% block student_examsactive %}active{% endblock student_examsactive %}
+{% block student_content %}
+
+<div class="container mt-4">
+
+    <h3>My Exams</h3>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Exam</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for sub in submissions %}
+            <tr>
+                <td>{{ sub.exam.title }}</td>
+                <td>{{ sub.exam.date }}</td>
+
+                <td>
+                    {% if sub.evaluation and sub.evaluation.evaluated %}
+                        <span class="text-success">Evaluated</span>
+                    {% else %}
+                        <span class="text-warning">Pending</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if sub.evaluation %}
+                        {{ sub.evaluation.total_score }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if sub.evaluation and sub.evaluation.evaluated %}
+                        <a href="{% url 'student_view_evaluation' sub.id %}" 
+                           class="btn btn-sm btn-success">
+                            View Result
+                        </a>
+                    {% else %}
+                        <span class="text-muted">Not Available</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

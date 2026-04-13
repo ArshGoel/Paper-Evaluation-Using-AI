@@ -1,0 +1,69 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_teachers_active %}active{% endblock manage_teachers_active %}
+
+{% block admin_content %}
+<div class="container mt-4">
+
+    <h2>Edit Teacher</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- USER INFO -->
+        <div class="mb-2">
+            <label>Username</label>
+            <input type="text" name="username" value="{{ teacher.user.username }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ teacher.user.email }}" class="form-control">
+        </div>
+
+        <div class="mb-2">
+            <label>Phone</label>
+            <input type="text" name="phone" value="{{ teacher.user.phone }}" class="form-control">
+        </div>
+
+        <!-- TEACHER INFO -->
+        <div class="mb-2">
+            <label>Department</label>
+            <input type="text" name="department" value="{{ teacher.department }}" class="form-control">
+        </div>
+
+        <!-- COURSES -->
+        <div class="mb-2">
+            <label>Courses</label>
+            <select name="courses" class="form-control" multiple>
+                {% for course in courses %}
+                    <option value="{{ course.id }}"
+                        {% if course in teacher.courses.all %}selected{% endif %}>
+                        {{ course.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- CLASSES -->
+        <div class="mb-2">
+            <label>Classes</label>
+            <select name="classes" class="form-control" multiple>
+                {% for c in classes %}
+                    <option value="{{ c.id }}"
+                        {% if c in teacher.classes.all %}selected{% endif %}>
+                        {{ c.name }} - Year {{ c.year }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- IMAGE -->
+        <div class="mb-2">
+            <label>Profile Image</label>
+            <input type="file" name="profile_image" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="{% url 'manage_teachers' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

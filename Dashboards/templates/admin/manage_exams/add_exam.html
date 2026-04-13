@@ -1,0 +1,39 @@
+{% extends "admin/admin_base.html" %}
+{% block manage_exams_active %}active{% endblock manage_exams_active %}
+
+{% block admin_content %}
+
+<div class="container mt-4">
+
+<h2>Add Exam</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <input name="title" placeholder="Exam Title" class="form-control mb-2">
+
+    <label>Course</label>
+    <select name="course" class="form-control mb-2">
+        {% for c in courses %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Class</label>
+    <select name="class_assigned" class="form-control mb-2">
+        {% for c in classes %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+    </select>
+    
+    <input name="total_marks" type="number" placeholder="Total Marks" class="form-control mb-2">
+
+    <input name="date" type="datetime-local" class="form-control mb-2">
+
+    <button class="btn btn-success">Create Exam</button>
+
+</form>
+
+</div>
+
+{% endblock %}
