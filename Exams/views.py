@@ -164,7 +164,18 @@ def gemini_call_question_paper(file_url):
         }
     '''
     response = requests.get(file_url)
+
+    if response.status_code != 200:
+        raise Exception("❌ Failed to download file")
+
     file_bytes = response.content
+
+    # 🔥 IMPORTANT: Validate PDF
+    if len(file_bytes) < 1000:
+        raise Exception("❌ File too small / invalid PDF")
+
+    if not file_bytes.startswith(b"%PDF"):
+        raise Exception("❌ Not a valid PDF file")
     for api_key in GEMINI_API_KEYS:
         try:
             print(f"\n🔑 Using KEY: {api_key[:6]}***")
