@@ -4,6 +4,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.http import FileResponse, Http404
 from django.contrib import messages
 import os
+
+import requests
 from Exams.models import Exam, Submission, Question, SubQuestion,  QuestionImage, SubQuestionImage, Evaluation
 import google.generativeai as genai
 import fitz  # PyMuPDF
@@ -162,46 +164,51 @@ def gemini_call_question_paper(file_path):
         }
     '''
 
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    # 🔥 Force raw download (Cloudinary fix)
+    if "/upload/" in file_url:
+        file_url = file_url.replace("/upload/", "/upload/fl_attachment/")
+
+    response = requests.get(file_url, headers=headers, allow_redirects=True)
+
+    print("URL:", file_url)
+    print("STATUS:", response.status_code)
+
+    if response.status_code != 200:
+        raise Exception("❌ Failed to download file")
+
+    file_bytes = response.content
+
+    if not file_bytes.startswith(b"%PDF"):
+        raise Exception("❌ Not a valid PDF")
+
     for api_key in GEMINI_API_KEYS:
         try:
-            print(f"\n🔑 Using KEY: {api_key[:6]}***")
             genai.configure(api_key=api_key)
 
-            uploaded_file = genai.upload_file(file_path)
+            model = genai.GenerativeModel("gemini-2.5-flash")
 
-            # wait until ready
-            while uploaded_file.state.name == "PROCESSING":
-                time.sleep(1)
-                uploaded_file = genai.get_file(uploaded_file.name)
+            response = model.generate_content(
+                [
+                    prompt,
+                    {
+                        "mime_type": "application/pdf",
+                        "data": file_bytes
+                    }
+                ]
+            )
 
-            # 🔀 Try models in random order
-            for model_name in GEMINI_MODELS:
-                try:
-                    print(f"🤖 Model: {model_name}")
+            if response.text:
+                return response.text
 
-                    model = genai.GenerativeModel(model_name)
-
-                    response = model.generate_content(
-                        [prompt, uploaded_file]
-                    )
-
-                    if response.text:
-                        print("✅ SUCCESS")
-                        return response.text
-
-                except Exception as model_error:
-                    err = str(model_error).lower()
-                    print(f"❌ Model failed: {err}")
-
-                    # If quota hit → try next key (not just model)
-                    if "quota" in err or "limit" in err:
-                        break
-
-        except Exception as key_error:
-            print(f"❌ Key failed: {key_error}")
+        except Exception as e:
+            print("❌ Error:", e)
             continue
 
-    raise Exception("🚨 All Gemini keys + models exhausted")
+    raise Exception("🚨 All Gemini keys failed")
 
 def edit_exam_teacher(request, id):
     exam = get_object_or_404(Exam, id=id)
@@ -240,7 +247,7 @@ def edit_exam_teacher(request, id):
         # 🔥 AUTO PARSE AFTER SAVE
         if parse_needed:
             try:
-                output = gemini_call_question_paper(exam.question_paper.path)
+                output = gemini_call_question_paper(exam.question_paper.url)
 
                 exam.questions.all().delete()
 
