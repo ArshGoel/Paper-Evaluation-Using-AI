@@ -164,44 +164,23 @@ def gemini_call_question_paper(file_url):
         }
     '''
 
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-
-    # 🔥 Force raw download (Cloudinary fix)
-    if "/upload/" in file_url:
-        file_url = file_url.replace("/upload/", "/upload/fl_attachment/")
-
-    response = requests.get(file_url, headers=headers, allow_redirects=True)
-
-    print("URL:", file_url)
-    print("STATUS:", response.status_code)
-
-    if response.status_code != 200:
-        raise Exception("❌ Failed to download file")
-
-    file_bytes = response.content
-
-    if not file_bytes.startswith(b"%PDF"):
-        raise Exception("❌ Not a valid PDF")
-
     for api_key in GEMINI_API_KEYS:
         try:
+            print(f"\n🔑 Using KEY: {api_key[:6]}***")
             genai.configure(api_key=api_key)
 
             model = genai.GenerativeModel("gemini-2.5-flash")
 
-            response = model.generate_content(
-                [
-                    prompt,
-                    {
-                        "mime_type": "application/pdf",
-                        "data": file_bytes
-                    }
-                ]
-            )
+            response = model.generate_content([
+                prompt,
+                {
+                    "mime_type": "application/pdf",
+                    "uri": file_url   # 🔥 DIRECT URL (NO DOWNLOAD)
+                }
+            ])
 
             if response.text:
+                print("✅ SUCCESS")
                 return response.text
 
         except Exception as e:
