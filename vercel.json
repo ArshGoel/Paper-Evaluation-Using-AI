@@ -1,8 +1,13 @@
 {
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "Paper_Evaluation_Using_AI/wsgi.py"
-    }
-  ]
+    
+    "routes": [
+        {   
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "Paper_Evaluation_Using_AI/wsgi.py"
+        }
+    ]
 }
