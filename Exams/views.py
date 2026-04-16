@@ -118,7 +118,8 @@ def save_exam_from_json(exam, raw_output):
                     "marks": sub.get("marks")
                 }
             )
-
+import requests
+import tempfile
 def gemini_call_question_paper(file_url):
     prompt = '''
         Extract the content of this question paper into STRICT JSON format.
@@ -164,19 +165,26 @@ def gemini_call_question_paper(file_url):
         }
     '''
 
+    response = requests.get(file_url)
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+        temp_file.write(response.content)
+        temp_file_path = temp_file.name
+
     for api_key in GEMINI_API_KEYS:
         try:
             print(f"\n🔑 Using KEY: {api_key[:6]}***")
             genai.configure(api_key=api_key)
 
+            # ✅ Step 2: Upload file to Gemini
+            uploaded_file = genai.upload_file(path=temp_file_path)
+
+            # ✅ Step 3: Call model with file
             model = genai.GenerativeModel("gemini-2.5-flash")
 
             response = model.generate_content([
                 prompt,
-                {
-                    "mime_type": "application/pdf",
-                    "uri": file_url   # 🔥 DIRECT URL (NO DOWNLOAD)
-                }
+                uploaded_file   # 🔥 THIS is the correct way
             ])
 
             if response.text:
