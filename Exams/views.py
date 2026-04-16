@@ -1,3 +1,4 @@
+import base64
 import time
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
@@ -120,6 +121,24 @@ def save_exam_from_json(exam, raw_output):
             )
 import requests
 import tempfile
+def download_pdf(file_url):
+    response = requests.get(file_url)
+
+    # ✅ Debug checks
+    print("Status:", response.status_code)
+    print("Content-Type:", response.headers.get("Content-Type"))
+    print("Size:", len(response.content))
+
+    if response.status_code != 200:
+        raise Exception("Failed to download file")
+
+    if "pdf" not in response.headers.get("Content-Type", ""):
+        raise Exception("Not a valid PDF (Cloudinary issue)")
+
+    if len(response.content) == 0:
+        raise Exception("Empty file")
+
+    return response.content
 def gemini_call_question_paper(file_url):
     prompt = '''
         Extract the content of this question paper into STRICT JSON format.
@@ -165,26 +184,28 @@ def gemini_call_question_paper(file_url):
         }
     '''
 
-    response = requests.get(file_url)
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-        temp_file.write(response.content)
-        temp_file_path = temp_file.name
+    file_bytes = download_pdf(file_url)
+    encoded_pdf = base64.b64encode(file_bytes).decode("utf-8")
 
     for api_key in GEMINI_API_KEYS:
         try:
             print(f"\n🔑 Using KEY: {api_key[:6]}***")
             genai.configure(api_key=api_key)
 
-            # ✅ Step 2: Upload file to Gemini
-            uploaded_file = genai.upload_file(path=temp_file_path)
-
-            # ✅ Step 3: Call model with file
             model = genai.GenerativeModel("gemini-2.5-flash")
 
             response = model.generate_content([
-                prompt,
-                uploaded_file   # 🔥 THIS is the correct way
+                {
+                    "parts": [
+                        {"text": prompt},
+                        {
+                            "inline_data": {
+                                "mime_type": "application/pdf",
+                                "data": encoded_pdf
+                            }
+                        }
+                    ]
+                }
             ])
 
             if response.text:
