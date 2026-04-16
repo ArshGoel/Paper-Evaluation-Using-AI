@@ -1,11 +1,14 @@
 import base64
 import time
+from urllib import response
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import FileResponse, Http404
 from django.contrib import messages
 import os
-
+# pip install pdf2image pillow
+from pdf2image import convert_from_bytes
+import requests
 import requests
 from Exams.models import Exam, Submission, Question, SubQuestion,  QuestionImage, SubQuestionImage, Evaluation
 import google.generativeai as genai
@@ -121,24 +124,25 @@ def save_exam_from_json(exam, raw_output):
             )
 import requests
 import tempfile
-def download_pdf(file_url):
+def pdf_to_images(file_url):
     response = requests.get(file_url)
 
-    # ✅ Debug checks
-    print("Status:", response.status_code)
-    print("Content-Type:", response.headers.get("Content-Type"))
-    print("Size:", len(response.content))
-
     if response.status_code != 200:
-        raise Exception("Failed to download file")
+        raise Exception("Failed to download PDF")
 
-    if "pdf" not in response.headers.get("Content-Type", ""):
-        raise Exception("Not a valid PDF (Cloudinary issue)")
+    images = convert_from_bytes(response.content)
 
-    if len(response.content) == 0:
-        raise Exception("Empty file")
+    return images  # list of PIL images
 
-    return response.content
+import base64
+from io import BytesIO
+
+def image_to_base64(img):
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode()
+
+
 def gemini_call_question_paper(file_url):
     prompt = '''
         Extract the content of this question paper into STRICT JSON format.
@@ -184,39 +188,52 @@ def gemini_call_question_paper(file_url):
         }
     '''
 
-    file_bytes = download_pdf(file_url)
-    encoded_pdf = base64.b64encode(file_bytes).decode("utf-8")
+    images = pdf_to_images(file_url)
+
+    parts = [{"text": prompt}]
+
+    # 🔥 add each page as image
+    for img in images:
+        encoded = image_to_base64(img)
+
+        parts.append({
+            "inline_data": {
+                "mime_type": "image/png",
+                "data": encoded
+            }
+        })
 
     for api_key in GEMINI_API_KEYS:
+        print(f"\n🔑 Using KEY: {api_key[:6]}***")
+
         try:
-            print(f"\n🔑 Using KEY: {api_key[:6]}***")
             genai.configure(api_key=api_key)
 
-            model = genai.GenerativeModel("gemini-2.5-flash")
+            # 🔥 Try all models for this key
+            for model_name in GEMINI_MODELS:
+                try:
+                    print(f"➡️ Trying model: {model_name}")
 
-            response = model.generate_content([
-                {
-                    "parts": [
-                        {"text": prompt},
-                        {
-                            "inline_data": {
-                                "mime_type": "application/pdf",
-                                "data": encoded_pdf
-                            }
-                        }
-                    ]
-                }
-            ])
+                    model = genai.GenerativeModel(model_name)
 
-            if response.text:
-                print("✅ SUCCESS")
-                return response.text
+                    response = model.generate_content([
+                        {"parts": parts}
+                    ])
 
-        except Exception as e:
-            print("❌ Error:", e)
+                    if response and response.text:
+                        print(f"✅ SUCCESS with {model_name}")
+                        return response.text
+
+                except Exception as model_error:
+                    print(f"❌ Model {model_name} failed: {model_error}")
+                    continue
+
+        except Exception as key_error:
+            print(f"❌ Key failed: {key_error}")
             continue
 
-    raise Exception("🚨 All Gemini keys failed")
+    # 🚨 If everything fails
+    raise Exception("🚨 All Gemini keys and models failed")
 
 def edit_exam_teacher(request, id):
     exam = get_object_or_404(Exam, id=id)
