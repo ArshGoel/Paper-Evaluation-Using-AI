@@ -174,10 +174,11 @@ GEMINI_API_KEYS = [
 ]
 GEMINI_API_KEYS = [k for k in GEMINI_API_KEYS if k]
 GEMINI_MODELS = [
-    "gemini-2.5-flash", #Working Text, images, video, audio
-    "gemini-3-flash-preview", #Working Text, Image, Video, Audio, and PDF
-    "gemini-2.5-flash-lite", #Working Text, image, video, audio, PDF
-    "gemini-3.1-flash-lite-preview", #Working Text, Image, Video, Audio, and PDF
+    "gemini-3.5-flash-lite",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
 ]
 GEMINI_MODEL_TEXT = os.getenv("GEMINI_MODEL_TEXT", "gemini-2.5-flash")
-GEMINI_MODEL_VISION = os.getenv("GEMINI_MODEL_VISION", "gemini-3-flash-preview")
+GEMINI_MODEL_VISION = os.getenv("GEMINI_MODEL_VISION", "gemini-3.6-flash")
