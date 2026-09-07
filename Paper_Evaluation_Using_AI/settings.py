@@ -25,8 +25,8 @@ IS_PRODUCTION = ENVIRONMENT == 'production'
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'local-development-only-change-me')
 
-DEBUG = os.getenv('DEBUG', 'true' if ENVIRONMENT == 'local' else 'false').lower() == 'true'
-
+# DEBUG = os.getenv('DEBUG', 'true' if ENVIRONMENT == 'local' else 'false').lower() == 'true'
+DEBUG=True
 ALLOWED_HOSTS = [host.strip() for host in os.getenv(
     'ALLOWED_HOSTS', '127.0.0.1,localhost,.vercel.app'
 ).split(',') if host.strip()]
