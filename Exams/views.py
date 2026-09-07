@@ -105,7 +105,18 @@ def clean_json_output(raw_text):
     return json.loads(cleaned)
 
 def clean_question_number(q):
-    return int(re.sub(r'\D', '', str(q)))  # removes '.', 'Q', etc
+    digits = re.sub(r'\D', '', str(q or ''))
+    if not digits:
+        raise ValueError('Question number is missing')
+    return int(digits)  # removes '.', 'Q', etc
+
+
+def first_value(data, *keys, default=None):
+    for key in keys:
+        value = data.get(key)
+        if value not in (None, ''):
+            return value
+    return default
 
 def save_exam_from_json(exam, raw_output):
     data = clean_json_output(raw_output)
@@ -114,32 +125,40 @@ def save_exam_from_json(exam, raw_output):
     exam.instructions = data.get("instructions", "")
     exam.save()
 
-    for q in data.get("questions", []):
-        # avoid duplicates
-        question, created = Question.objects.get_or_create(
+    questions = data.get('questions') or data.get('question') or []
+    if isinstance(questions, dict):
+        questions = [questions]
+
+    for sequence, q in enumerate(questions, start=1):
+        question_text = first_value(q, 'question_text', 'text', 'question', default='').strip()
+        if not question_text:
+            continue
+
+        raw_number = first_value(q, 'question_number', 'question_no', 'number', 'no')
+        try:
+            question_number = clean_question_number(raw_number)
+        except ValueError:
+            question_number = sequence
+
+        question, created = Question.objects.update_or_create(
             exam=exam,
-            part = q.get("part"),
-            question_number=clean_question_number(q.get('question_number')),
+            question_number=question_number,
             defaults={
-                "text": q.get("question_text"),
-                "marks": q.get("marks") or 0,
+                'part': first_value(q, 'part', 'section', default='') or '',
+                'text': question_text,
+                'marks': first_value(q, 'marks', 'mark', default=0) or 0,
             }
         )
 
-        # if already exists → update
-        if not created:
-            question.text = q.get("question_text")
-            question.marks = q.get("marks") or 0
-            question.save()
-
         # 🔥 handle sub-questions
-        for sub in q.get("sub_questions", []):
+        sub_questions = q.get('sub_questions') or q.get('subquestions') or []
+        for sub in sub_questions:
             SubQuestion.objects.update_or_create(
                 question=question,
-                label=sub.get("label"),
+                label=first_value(sub, 'label', 'name', default=''),
                 defaults={
-                    "text": sub.get("text"),
-                    "marks": sub.get("marks")
+                    'text': first_value(sub, 'text', 'question_text', default=''),
+                    'marks': first_value(sub, 'marks', 'mark')
                 }
             )
 import tempfile
