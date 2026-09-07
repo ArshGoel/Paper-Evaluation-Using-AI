@@ -26,10 +26,12 @@
         <div id="qp-name" class="mb-1 text-success">
             {% if exam.question_paper %}
                 Current: {{ exam.question_paper.name|cut:"exams/" }}
+            {% elif exam.question_paper_data %}
+                Current: {{ exam.question_paper_name }}
             {% endif %}
         </div>
 
-        {% if exam.question_paper %}
+        {% if exam.question_paper or exam.question_paper_data %}
             <div class="form-check mb-2">
                 <input type="checkbox" name="delete_qp" class="form-check-input">
                 <label class="form-check-label text-danger">Delete current Question Paper</label>
@@ -46,10 +48,12 @@
         <div id="ak-name" class="mb-1 text-success">
             {% if exam.answer_key %}
                 Current: {{ exam.answer_key.name|cut:"exams/" }}
+            {% elif exam.answer_key_data %}
+                Current: {{ exam.answer_key_name }}
             {% endif %}
         </div>
 
-        {% if exam.answer_key %}
+        {% if exam.answer_key or exam.answer_key_data %}
             <div class="form-check mb-2">
                 <input type="checkbox" name="delete_ak" class="form-check-input">
                 <label class="form-check-label text-danger">Delete current Answer Key</label>
