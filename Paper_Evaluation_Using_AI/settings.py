@@ -179,6 +179,6 @@ GEMINI_MODELS = [
     "gemini-3.5-flash",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
-]
+]   
 GEMINI_MODEL_TEXT = os.getenv("GEMINI_MODEL_TEXT", "gemini-2.5-flash")
 GEMINI_MODEL_VISION = os.getenv("GEMINI_MODEL_VISION", "gemini-3.6-flash")

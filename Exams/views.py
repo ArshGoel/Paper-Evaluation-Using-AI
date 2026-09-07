@@ -31,7 +31,7 @@ GEMINI_MODELS = settings.GEMINI_MODELS.copy()
 GEMINI_MODEL_CACHE = {}
 
 
-def gemini_generate(contents):
+def gemini_generate(contents, include_model=False):
     """Try configured keys/models once each and return response text."""
     last_error = None
 
@@ -49,6 +49,8 @@ def gemini_generate(contents):
                     response = model.generate_content(contents)
                     response_text = getattr(response, 'text', '').strip()
                     if response_text:
+                        if include_model:
+                            return response_text, model_name
                         return response_text
                     last_error = ValueError(f'{model_name} returned an empty response')
                 except Exception as error:
@@ -841,7 +843,10 @@ def extract_student_sheets(request, submission_id):
     try:
         uploaded_file = gemini_upload_pdf(file_data)
         start_time = time.time()
-        final_output = gemini_generate([prompt, uploaded_file])
+        final_output, model_name = gemini_generate(
+            [prompt, uploaded_file],
+            include_model=True,
+        )
         processing_time_ms = int((time.time() - start_time) * 1000)
     except Exception as extraction_error:
         print(f'Answer extraction failed: {extraction_error}')
