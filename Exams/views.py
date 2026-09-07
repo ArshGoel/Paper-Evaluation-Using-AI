@@ -8,7 +8,6 @@ from django.http import FileResponse, Http404
 from django.contrib import messages
 import os
 # pip install pdf2image pillow
-from pdf2image import convert_from_bytes
 import requests
 import requests
 from Exams.models import Exam, Submission, Question, SubQuestion,  QuestionImage, SubQuestionImage, Evaluation
@@ -145,7 +144,15 @@ def save_exam_from_json(exam, raw_output):
             )
 import tempfile
 def pdf_to_images(pdf_data):
-    return convert_from_bytes(pdf_data)
+    document = fitz.open(stream=pdf_data, filetype='pdf')
+    images = []
+
+    for page in document:
+        pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+        images.append(Image.open(io.BytesIO(pixmap.tobytes('png'))).convert('RGB'))
+
+    document.close()
+    return images
 
 import base64
 from io import BytesIO
