@@ -119,7 +119,7 @@ def save_exam_from_json(exam, raw_output):
         question, created = Question.objects.get_or_create(
             exam=exam,
             part = q.get("part"),
-            question_number=clean_question_number(data['question_number']),
+            question_number=clean_question_number(q.get('question_number')),
             defaults={
                 "text": q.get("question_text"),
                 "marks": q.get("marks") or 0,
