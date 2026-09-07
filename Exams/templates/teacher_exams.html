@@ -29,7 +29,7 @@
                     <td>{{ exam.date|date:"d M Y, H:i" }}</td>
 
                     <td>
-                        {% if exam.question_paper %}
+                        {% if exam.question_paper or exam.question_paper_data %}
                             <button type="button"
                                     class="btn btn-sm btn-outline-primary view-pdf-btn"
                                     data-exam-id="{{ exam.id }}"
@@ -42,7 +42,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if exam.answer_key %}
+                        {% if exam.answer_key or exam.answer_key_data %}
                             <button type="button"
                                     class="btn btn-sm btn-outline-primary view-pdf-btn"
                                     data-exam-id="{{ exam.id }}"
