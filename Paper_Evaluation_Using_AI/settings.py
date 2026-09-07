@@ -125,16 +125,16 @@ STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build',"static")
 
 AUTH_USER_MODEL = 'Accounts.User'
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUD_NAME') or os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('API_KEY') or os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('API_SECRET') or os.getenv('CLOUDINARY_API_SECRET'),
+}
+
 if ENVIRONMENT == "production":
     print("🔥 USING CLOUDINARY")
 
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.getenv('CLOUD_NAME'),
-        'API_KEY': os.getenv('API_KEY'),
-        'API_SECRET': os.getenv('API_SECRET'),
-    }
 
 else:
     print("⚠ USING LOCAL STORAGE")

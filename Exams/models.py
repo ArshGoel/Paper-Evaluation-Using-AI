@@ -1,10 +1,18 @@
 from django.db import models
+from django.core.files.storage import FileSystemStorage
 from cloudinary_storage.storage import MediaCloudinaryStorage
 from Accounts.models import User, Course, Class
 from django.utils.text import slugify
 
 # 🔥 Cloudinary storage instance
 cloudinary_storage = MediaCloudinaryStorage()
+
+
+class OverwriteStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length=None):
+        if self.exists(name):
+            self.delete(name)
+        return name
 
 
 # ================== UPLOAD PATHS ==================
@@ -48,6 +56,8 @@ class Exam(models.Model):
         null=True,
         blank=True
     )
+    question_paper_data = models.BinaryField(null=True, blank=True)
+    question_paper_name = models.CharField(max_length=255, blank=True)
 
     answer_key = models.FileField(
         upload_to=answer_key_upload,
@@ -55,6 +65,8 @@ class Exam(models.Model):
         null=True,
         blank=True
     )
+    answer_key_data = models.BinaryField(null=True, blank=True)
+    answer_key_name = models.CharField(max_length=255, blank=True)
 
     instructions = models.TextField(blank=True)
 
@@ -170,6 +182,8 @@ class Submission(models.Model):
         upload_to=submission_upload_path,
         storage=cloudinary_storage
     )
+    file_data = models.BinaryField(null=True, blank=True)
+    file_name = models.CharField(max_length=255, blank=True)
 
     submitted_at = models.DateTimeField(auto_now_add=True)
 

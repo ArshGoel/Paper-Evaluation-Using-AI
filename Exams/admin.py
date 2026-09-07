@@ -89,8 +89,8 @@ class ExtractedAnswerInline(admin.TabularInline):
 # =======================
 @admin.register(StudentSheetExtractVersion)
 class ExtractVersionAdmin(admin.ModelAdmin):
-    list_display = ('submission', 'version_number', 'confidence_score', 'is_best', 'status')
-    list_filter = ('is_best', 'status')
+    list_display = ('submission', 'version_number', 'confidence_score', 'is_best')
+    list_filter = ('is_best',)
     inlines = [ExtractedAnswerInline]
 
 
@@ -99,8 +99,7 @@ class ExtractVersionAdmin(admin.ModelAdmin):
 # =======================
 @admin.register(ExtractedQuestionAnswer)
 class ExtractedAnswerAdmin(admin.ModelAdmin):
-    list_display = ('extract_version', 'question_number', 'contains_diagram')
-    list_filter = ('contains_diagram', 'contains_math', 'contains_code')
+    list_display = ('extract_version', 'question_number')
     search_fields = ('answer_text',)
 
 

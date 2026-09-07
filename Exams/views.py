@@ -3,6 +3,7 @@ import time
 from urllib import response
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
+from django.urls import reverse
 from django.http import FileResponse, Http404
 from django.contrib import messages
 import os
@@ -33,14 +34,29 @@ GEMINI_MODELS = settings.GEMINI_MODELS.copy()
 # 🔀 Shuffle both lists (true randomness)
 random.shuffle(GEMINI_API_KEYS)
 random.shuffle(GEMINI_MODELS)
+
+def get_pdf_bytes(file_data, legacy_file=None):
+    if file_data:
+        return bytes(file_data)
+
+    if legacy_file:
+        with legacy_file.open('rb') as pdf_file:
+            return pdf_file.read()
+
+    raise Http404('No file found')
+
 def view_pdf(request, exam_id, file_type, student_id=None):
     exam = get_object_or_404(Exam, id=exam_id)
 
     if file_type == 'question_paper':
-        file_field = exam.question_paper
+        pdf_data = exam.question_paper_data
+        filename = exam.question_paper_name or 'question_paper.pdf'
+        legacy_file = exam.question_paper
 
     elif file_type == 'answer_key':
-        file_field = exam.answer_key
+        pdf_data = exam.answer_key_data
+        filename = exam.answer_key_name or 'answer_key.pdf'
+        legacy_file = exam.answer_key
 
     elif file_type == 'submission':
         submission = get_object_or_404(
@@ -48,17 +64,17 @@ def view_pdf(request, exam_id, file_type, student_id=None):
             exam=exam,
             student_id=student_id
         )
-        file_field = submission.file
+        pdf_data = submission.file_data
+        filename = submission.file_name or 'submission.pdf'
+        legacy_file = submission.file
 
     else:
         raise Http404('Invalid file type')
 
-    if not file_field:
-        raise Http404('No file found')
-
-    filename = os.path.basename(file_field.name)
-
-    response = FileResponse(file_field.open('rb'), content_type='application/pdf')
+    response = FileResponse(
+        io.BytesIO(get_pdf_bytes(pdf_data, legacy_file)),
+        content_type='application/pdf'
+    )
     response['Content-Disposition'] = f'inline; filename="{filename}"'
     return response
 
@@ -72,7 +88,13 @@ def teacher_exams(request):
 
     for exam in exams:
         if exam.question_paper:
-            exam.full_url = request.build_absolute_uri(exam.question_paper.url)
+            exam.full_url = request.build_absolute_uri(
+                reverse('view_pdf', args=[exam.id, 'question_paper'])
+            )
+        elif exam.question_paper_data:
+            exam.full_url = request.build_absolute_uri(
+                reverse('view_pdf', args=[exam.id, 'question_paper'])
+            )
 
     return render(request, 'teacher_exams.html', {
         'exams': exams
@@ -121,17 +143,9 @@ def save_exam_from_json(exam, raw_output):
                     "marks": sub.get("marks")
                 }
             )
-import requests
 import tempfile
-def pdf_to_images(file_url):
-    response = requests.get(file_url)
-
-    if response.status_code != 200:
-        raise Exception("Failed to download PDF")
-
-    images = convert_from_bytes(response.content)
-
-    return images  # list of PIL images
+def pdf_to_images(pdf_data):
+    return convert_from_bytes(pdf_data)
 
 import base64
 from io import BytesIO
@@ -142,7 +156,7 @@ def image_to_base64(img):
     return base64.b64encode(buffer.getvalue()).decode()
 
 
-def gemini_call_question_paper(file_url):
+def gemini_call_question_paper(pdf_data):
     prompt = '''
         Extract the content of this question paper into STRICT JSON format.
         Rules:
@@ -187,7 +201,7 @@ def gemini_call_question_paper(file_url):
         }
     '''
 
-    images = pdf_to_images(file_url)
+    images = pdf_to_images(pdf_data)
 
     parts = [{"text": prompt}]
 
@@ -243,15 +257,15 @@ def edit_exam_teacher(request, id):
         exam.date = request.POST.get('date')
         exam.instructions = request.POST.get('instructions')
         if request.POST.get("delete_qp"):
-            if exam.question_paper:
-                exam.question_paper.delete(save=False)
-                exam.question_paper = None
+            exam.question_paper_data = None
+            exam.question_paper_name = ''
+            exam.question_paper = None
 
         # 🔥 DELETE ANSWER KEY
         if request.POST.get("delete_ak"):
-            if exam.answer_key:
-                exam.answer_key.delete(save=False)
-                exam.answer_key = None
+            exam.answer_key_data = None
+            exam.answer_key_name = ''
+            exam.answer_key = None
 
         new_qp = request.FILES.get('question_paper')
         new_ak = request.FILES.get('answer_key')
@@ -260,18 +274,20 @@ def edit_exam_teacher(request, id):
         parse_needed = False
 
         if new_qp:
-            exam.question_paper = new_qp
+            exam.question_paper_data = new_qp.read()
+            exam.question_paper_name = new_qp.name
             parse_needed = True   # ✅ trigger parsing
 
         if new_ak:
-            exam.answer_key = new_ak
+            exam.answer_key_data = new_ak.read()
+            exam.answer_key_name = new_ak.name
 
         exam.save()
 
         # 🔥 AUTO PARSE AFTER SAVE
         if parse_needed:
             try:
-                output = gemini_call_question_paper(exam.question_paper.url)
+                output = gemini_call_question_paper(exam.question_paper_data)
 
                 exam.questions.all().delete()
 
@@ -355,17 +371,6 @@ def admin_upload_submission_exam(request, exam_id):
             ).first()
 
             if submission:
-                file_path = submission.file.path if submission.file else None
-
-                # ✅ Django delete
-                if submission.file:
-                    submission.file.delete(save=False)
-
-                # ✅ EXTRA SAFETY (force delete)
-                if file_path and os.path.exists(file_path):
-                    os.remove(file_path)
-
-                # ✅ delete db
                 submission.delete()
 
         # 🔥 UPLOAD / REPLACE
@@ -376,7 +381,11 @@ def admin_upload_submission_exam(request, exam_id):
             Submission.objects.update_or_create(
                 student=student,
                 exam=exam,
-                defaults={'file': file}
+                defaults={
+                    'file': None,
+                    'file_data': file.read(),
+                    'file_name': file.name,
+                }
             )
 
         return redirect('admin_upload_submission_exam', exam_id=exam.id)
@@ -511,7 +520,7 @@ def save_extracted_answers(extract_version, gemini_json):
 def extract_student_sheets(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
 
-    file_path = submission.file.path
+    file_data = get_pdf_bytes(submission.file_data, submission.file)
 
     prompt = """
 
@@ -747,7 +756,14 @@ def extract_student_sheets(request, submission_id):
             print(f"\n🔑 Using KEY: {api_key[:6]}***")
             genai.configure(api_key=api_key)
 
-            uploaded_file = genai.upload_file(file_path)
+            with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_pdf:
+                temp_pdf.write(file_data)
+                temp_pdf_path = temp_pdf.name
+
+            try:
+                uploaded_file = genai.upload_file(temp_pdf_path)
+            finally:
+                os.unlink(temp_pdf_path)
 
             while uploaded_file.state.name == "PROCESSING":
                 time.sleep(1)
