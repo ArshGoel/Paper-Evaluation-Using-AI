@@ -56,10 +56,9 @@ def view_pdf(request, exam_id, file_type, student_id=None):
     if not file_field:
         raise Http404('No file found')
 
-    file_path = file_field.path
-    filename = os.path.basename(file_path)
+    filename = os.path.basename(file_field.name)
 
-    response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+    response = FileResponse(file_field.open('rb'), content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="{filename}"'
     return response
 
