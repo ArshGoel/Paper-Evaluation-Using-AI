@@ -403,7 +403,9 @@ def student_view_evaluation(request, submission_id):
         messages.warning(request, "Evaluation not available yet")
         return redirect('student_dashboard')
 
-    question_evals = evaluation.question_evaluations.select_related('question')
+    question_evals = evaluation.question_evaluations.select_related(
+        'question'
+    ).order_by('question__question_number', 'question_id')
 
     return render(request, 'student/view_evaluation.html', {
         'submission': submission,

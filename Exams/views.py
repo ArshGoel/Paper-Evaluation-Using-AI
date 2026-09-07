@@ -1008,10 +1008,10 @@ def evaluate_question(question_text, student_answer, max_marks):
         except Exception:
             continue
 
-    # ❌ fallback (VERY IMPORTANT)
+    # Keep failed calls distinguishable from a genuine zero score.
     return {
         "marks": 0,
-        "feedback": "AI evaluation failed"
+        "feedback": "AI evaluation failed; please retry this evaluation."
     }
 
 def evaluate_submission_view(request, submission_id):
@@ -1034,7 +1034,19 @@ def evaluate_submission_view(request, submission_id):
         for a in answers
     }
 
-    questions = Question.objects.filter(exam=submission.exam)
+    questions = Question.objects.filter(
+        exam=submission.exam
+    ).order_by('question_number', 'id')
+
+    # Older parses may have created duplicate rows before the uniqueness
+    # constraint on exam and question number was enforced.
+    unique_questions = []
+    seen_question_numbers = set()
+    for question in questions:
+        if question.question_number in seen_question_numbers:
+            continue
+        seen_question_numbers.add(question.question_number)
+        unique_questions.append(question)
 
     # 🔥 create / reset evaluation
     evaluation, _ = Evaluation.objects.get_or_create(
@@ -1046,7 +1058,7 @@ def evaluate_submission_view(request, submission_id):
 
     total_score = 0
 
-    for q in questions:
+    for q in unique_questions:
 
         q_no = str(q.question_number)
         student_answer = answer_map.get(q_no, "")
