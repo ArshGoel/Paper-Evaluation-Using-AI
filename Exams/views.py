@@ -39,8 +39,13 @@ def get_pdf_bytes(file_data, legacy_file=None):
         return bytes(file_data)
 
     if legacy_file:
-        with legacy_file.open('rb') as pdf_file:
-            return pdf_file.read()
+        try:
+            with legacy_file.open('rb') as pdf_file:
+                return pdf_file.read()
+        except Exception as error:
+            raise Http404(
+                'This uploaded file is unavailable. Please upload the PDF again.'
+            ) from error
 
     raise Http404('No file found')
 
@@ -452,7 +457,7 @@ def parse_gemini_output(text):
     for i, block in enumerate(page_blocks[1:]):  # skip first empty split
         page_data = {}
 
-        page_data["page"] = int(page_numbers[i])
+        page_data["page"] = int(page_numbers[i]) if i < len(page_numbers) else i + 1
 
         # Extract metadata
         meta_match = re.search(r'---(.*?)---', block, re.DOTALL)
@@ -466,7 +471,10 @@ def parse_gemini_output(text):
                     if cast == bool:
                         return val.lower() == "true"
                     if cast == int:
-                        return int(val)
+                        try:
+                            return int(re.search(r'-?\d+', val).group())
+                        except (AttributeError, ValueError):
+                            return None
                     return val
                 return None
 
@@ -861,7 +869,13 @@ def extract_student_sheets(request, submission_id):
             continue
 
     if not final_output:
-        final_output = "Evaluation failed: All Gemini keys exhausted"
+        messages.error(
+            request,
+            'Answer extraction failed: Gemini could not process this PDF. '
+            'Please check the API keys and upload the answer sheet again.'
+        )
+        return redirect('view_submissions', exam_id=submission.exam.id)
+
     # Step 1: Convert to JSON (temporary)
     parsed_json = parse_gemini_output(final_output)
 
