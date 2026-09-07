@@ -1,8 +1,18 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from cloudinary_storage.storage import MediaCloudinaryStorage
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
-cloudinary_storage = MediaCloudinaryStorage()
+if settings.IS_PRODUCTION:
+    from cloudinary_storage.storage import MediaCloudinaryStorage
+
+    cloudinary_storage = MediaCloudinaryStorage()
+else:
+    cloudinary_storage = FileSystemStorage(
+        location=settings.MEDIA_ROOT,
+        base_url=settings.MEDIA_URL,
+    )
+
 
 class User(AbstractUser):
     ROLE_CHOICES = [

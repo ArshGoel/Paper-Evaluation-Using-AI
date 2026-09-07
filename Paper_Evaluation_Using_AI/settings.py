@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,11 +20,16 @@ if dotenv_path.exists():
             value = value.strip().strip('"\'')
             os.environ.setdefault(key, value)
 
-SECRET_KEY = 'django-insecure-cfixe)n(_^*d0%q%w!#87xp&dyoa8hm&0f-+l79z3twf_9-v90'
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'local').lower()
+IS_PRODUCTION = ENVIRONMENT == 'production'
 
-DEBUG = True
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'local-development-only-change-me')
 
-ALLOWED_HOSTS = ["*"]
+DEBUG = os.getenv('DEBUG', 'true' if ENVIRONMENT == 'local' else 'false').lower() == 'true'
+
+ALLOWED_HOSTS = [host.strip() for host in os.getenv(
+    'ALLOWED_HOSTS', '127.0.0.1,localhost,.vercel.app'
+).split(',') if host.strip()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,8 +41,6 @@ INSTALLED_APPS = [
     'Accounts',
     'Exams',
     'Dashboards',
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -70,9 +74,10 @@ WSGI_APPLICATION = 'Paper_Evaluation_Using_AI.wsgi.application'
 
 import dj_database_url
 
-ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
+if IS_PRODUCTION:
+    INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
 
-if ENVIRONMENT == "local":
+if not IS_PRODUCTION:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -80,9 +85,12 @@ if ENVIRONMENT == "local":
         }
     }
 else:
+    database_url = os.getenv('DATABASE_URL')
+    if not database_url:
+        raise ImproperlyConfigured('DATABASE_URL is required when ENVIRONMENT=production')
     DATABASES = {
         'default': dj_database_url.parse(
-            os.getenv("DATABASE_URL"),
+            database_url,
             conn_max_age=600,
             ssl_require=True
         )
@@ -111,7 +119,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -144,6 +152,13 @@ else:
 
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 LOGIN_URL = '/auth/slogin/'
+
+if IS_PRODUCTION:
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.getenv(
+        'CSRF_TRUSTED_ORIGINS',
+        'https://paper-evaluation-using-ai.vercel.app'
+    ).split(',') if origin.strip()]
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 

@@ -1,11 +1,19 @@
 from django.db import models
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from cloudinary_storage.storage import MediaCloudinaryStorage
+from django.db.models import Max
 from Accounts.models import User, Course, Class
 from django.utils.text import slugify
 
-# 🔥 Cloudinary storage instance
-cloudinary_storage = MediaCloudinaryStorage()
+if settings.IS_PRODUCTION:
+    from cloudinary_storage.storage import MediaCloudinaryStorage
+
+    cloudinary_storage = MediaCloudinaryStorage()
+else:
+    cloudinary_storage = FileSystemStorage(
+        location=settings.MEDIA_ROOT,
+        base_url=settings.MEDIA_URL,
+    )
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -245,6 +253,10 @@ class StudentSheetExtractVersion(models.Model):
     raw_markdown = models.TextField()
     structured_json = models.JSONField(null=True, blank=True)
 
+    primary_language = models.CharField(max_length=50, null=True, blank=True)
+    model_used = models.CharField(max_length=100, null=True, blank=True)
+    processing_time_ms = models.IntegerField(null=True, blank=True)
+
     json_file = models.FileField(
         upload_to=extract_upload_path,
         storage=cloudinary_storage,
@@ -261,6 +273,26 @@ class StudentSheetExtractVersion(models.Model):
         unique_together = ('submission', 'version_number')
         ordering = ['-version_number']
 
+    @classmethod
+    def get_next_version(cls, submission):
+        highest_version = cls.objects.filter(submission=submission).aggregate(
+            highest=Max('version_number')
+        )['highest']
+        return (highest_version or 0) + 1
+
+    @classmethod
+    def update_best_version(cls, submission):
+        best_version = cls.objects.filter(submission=submission).order_by(
+            '-confidence_score', '-version_number'
+        ).first()
+        if best_version:
+            cls.objects.filter(submission=submission).exclude(
+                pk=best_version.pk
+            ).update(is_best=False)
+            if not best_version.is_best:
+                best_version.is_best = True
+                best_version.save(update_fields=['is_best'])
+
     def __str__(self):
         return f"Submission {self.submission.id} - v{self.version_number}"
 
@@ -270,6 +302,9 @@ class ExtractedQuestionAnswer(models.Model):
 
     question_number = models.CharField(max_length=20)
     answer_text = models.TextField()
+    contains_math = models.BooleanField(default=False)
+    contains_diagram = models.BooleanField(default=False)
+    contains_code = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Q{self.question_number} (v{self.extract_version.version_number})"

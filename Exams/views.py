@@ -514,15 +514,42 @@ def save_extracted_answers(extract_version, gemini_json):
         answer_text = question_data[q_no].strip()
         lower = answer_text.lower()
 
-        ExtractedQuestionAnswer.objects.create(
-            extract_version=extract_version,
-            question_number=q_no,
-            answer_text=answer_text,
+        answer_data = {
+            'extract_version': extract_version,
+            'question_number': q_no,
+            'answer_text': answer_text,
+        }
+        model_fields = {field.name for field in ExtractedQuestionAnswer._meta.fields}
+        optional_flags = {
+            'contains_diagram': "diagram" in lower or "graph" in lower,
+            'contains_math': "=" in answer_text,
+            'contains_code': "def " in answer_text or "class " in answer_text,
+        }
+        answer_data.update({
+            name: value for name, value in optional_flags.items()
+            if name in model_fields
+        })
+        ExtractedQuestionAnswer.objects.create(**answer_data)
 
-            contains_diagram=("diagram" in lower or "graph" in lower),
-            contains_math=("=" in answer_text),
-            contains_code=("def " in answer_text or "class " in answer_text)
-        )
+
+def get_next_extract_version(submission):
+    latest = StudentSheetExtractVersion.objects.filter(
+        submission=submission
+    ).order_by('-version_number').values_list('version_number', flat=True).first()
+    return (latest or 0) + 1
+
+
+def mark_best_extract_version(submission):
+    best_version = StudentSheetExtractVersion.objects.filter(
+        submission=submission
+    ).order_by('-confidence_score', '-version_number').first()
+    if best_version:
+        StudentSheetExtractVersion.objects.filter(
+            submission=submission
+        ).exclude(pk=best_version.pk).update(is_best=False)
+        if not best_version.is_best:
+            best_version.is_best = True
+            best_version.save(update_fields=['is_best'])
 
 def extract_student_sheets(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
@@ -820,20 +847,28 @@ def extract_student_sheets(request, submission_id):
     parsed_json = parse_gemini_output(final_output)
 
     # Step 2: version
-    version = StudentSheetExtractVersion.get_next_version(submission)
+    version = get_next_extract_version(submission)
 
     # Step 3: create object
-    obj = StudentSheetExtractVersion.objects.create(
-        submission=submission,
-        version_number=version,
-        raw_markdown=final_output,
-        structured_json=parsed_json,
-        model_used=model_name,
-        processing_time_ms=processing_time_ms//1000,
-        primary_language=parsed_json.get("pages", [{}])[0].get("primary_language"),
-        confidence_score=parsed_json.get("pages", [{}])[0].get("confidence_score") or 0,
-    )
-    StudentSheetExtractVersion.update_best_version(submission)
+    extract_data = {
+        'submission': submission,
+        'version_number': version,
+        'raw_markdown': final_output,
+        'structured_json': parsed_json,
+        'confidence_score': parsed_json.get("pages", [{}])[0].get("confidence_score") or 0,
+    }
+    model_fields = {field.name for field in StudentSheetExtractVersion._meta.fields}
+    optional_data = {
+        'model_used': model_name,
+        'processing_time_ms': processing_time_ms // 1000,
+        'primary_language': parsed_json.get("pages", [{}])[0].get("primary_language"),
+    }
+    extract_data.update({
+        name: value for name, value in optional_data.items()
+        if name in model_fields
+    })
+    obj = StudentSheetExtractVersion.objects.create(**extract_data)
+    mark_best_extract_version(submission)
     obj.refresh_from_db()
     # Step 4: save file
     json_content = json.dumps(parsed_json, indent=4)
