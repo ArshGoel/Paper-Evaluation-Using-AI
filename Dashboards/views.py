@@ -403,9 +403,17 @@ def student_view_evaluation(request, submission_id):
         messages.warning(request, "Evaluation not available yet")
         return redirect('student_dashboard')
 
-    question_evals = evaluation.question_evaluations.select_related(
+    stored_question_evals = evaluation.question_evaluations.select_related(
         'question'
     ).order_by('question__question_number', 'question_id')
+    question_evals = []
+    seen_question_numbers = set()
+    for question_eval in stored_question_evals:
+        question_number = question_eval.question.question_number
+        if question_number in seen_question_numbers:
+            continue
+        seen_question_numbers.add(question_number)
+        question_evals.append(question_eval)
 
     return render(request, 'student/view_evaluation.html', {
         'submission': submission,

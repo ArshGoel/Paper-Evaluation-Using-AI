@@ -28,10 +28,67 @@ from Exams.models import ExtractedQuestionAnswer
 
 GEMINI_API_KEYS = settings.GEMINI_API_KEYS.copy()
 GEMINI_MODELS = settings.GEMINI_MODELS.copy()
+GEMINI_MODEL_CACHE = {}
 
-# 🔀 Shuffle both lists (true randomness)
-random.shuffle(GEMINI_API_KEYS)
-random.shuffle(GEMINI_MODELS)
+
+def gemini_generate(contents):
+    """Try configured keys/models once each and return response text."""
+    last_error = None
+
+    for api_key in GEMINI_API_KEYS:
+        try:
+            genai.configure(api_key=api_key)
+            for model_name in GEMINI_MODELS:
+                try:
+                    cache_key = (api_key, model_name)
+                    model = GEMINI_MODEL_CACHE.get(cache_key)
+                    if model is None:
+                        model = genai.GenerativeModel(model_name)
+                        GEMINI_MODEL_CACHE[cache_key] = model
+
+                    response = model.generate_content(contents)
+                    response_text = getattr(response, 'text', '').strip()
+                    if response_text:
+                        return response_text
+                    last_error = ValueError(f'{model_name} returned an empty response')
+                except Exception as error:
+                    last_error = error
+                    error_text = str(error).lower()
+                    if 'quota' in error_text or 'limit' in error_text:
+                        break
+        except Exception as error:
+            last_error = error
+
+    if last_error:
+        raise RuntimeError('All Gemini API attempts failed') from last_error
+    raise RuntimeError('No Gemini API keys are configured')
+
+
+def gemini_upload_pdf(pdf_data):
+    """Upload a PDF once, falling back to another key only if needed."""
+    if not GEMINI_API_KEYS:
+        raise RuntimeError('No Gemini API keys are configured')
+
+    last_error = None
+    with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_pdf:
+        temp_pdf.write(pdf_data)
+        temp_pdf_path = temp_pdf.name
+
+    try:
+        for api_key in GEMINI_API_KEYS:
+            try:
+                genai.configure(api_key=api_key)
+                uploaded_file = genai.upload_file(temp_pdf_path)
+                while uploaded_file.state.name == 'PROCESSING':
+                    time.sleep(1)
+                    uploaded_file = genai.get_file(uploaded_file.name)
+                return uploaded_file
+            except Exception as error:
+                last_error = error
+    finally:
+        os.unlink(temp_pdf_path)
+
+    raise RuntimeError('Unable to upload PDF to Gemini') from last_error
 
 def get_pdf_bytes(file_data, legacy_file=None):
     if file_data:
@@ -246,37 +303,7 @@ def gemini_call_question_paper(pdf_data):
             }
         })
 
-    for api_key in GEMINI_API_KEYS:
-        print(f"\n🔑 Using KEY: {api_key[:6]}***")
-
-        try:
-            genai.configure(api_key=api_key)
-
-            # 🔥 Try all models for this key
-            for model_name in GEMINI_MODELS:
-                try:
-                    print(f"➡️ Trying model: {model_name}")
-
-                    model = genai.GenerativeModel(model_name)
-
-                    response = model.generate_content([
-                        {"parts": parts}
-                    ])
-
-                    if response and response.text:
-                        print(f"✅ SUCCESS with {model_name}")
-                        return response.text
-
-                except Exception as model_error:
-                    print(f"❌ Model {model_name} failed: {model_error}")
-                    continue
-
-        except Exception as key_error:
-            print(f"❌ Key failed: {key_error}")
-            continue
-
-    # 🚨 If everything fails
-    raise Exception("🚨 All Gemini keys and models failed")
+    return gemini_generate([{"parts": parts}])
 
 def edit_exam_teacher(request, id):
     exam = get_object_or_404(Exam, id=id)
@@ -811,61 +838,13 @@ def extract_student_sheets(request, submission_id):
     processing_time_ms = 0
     start_time = None   # 👈 important
 
-    for api_key in GEMINI_API_KEYS:
-        try:
-            print(f"\n🔑 Using KEY: {api_key[:6]}***")
-            genai.configure(api_key=api_key)
-
-            with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_pdf:
-                temp_pdf.write(file_data)
-                temp_pdf_path = temp_pdf.name
-
-            try:
-                uploaded_file = genai.upload_file(temp_pdf_path)
-            finally:
-                os.unlink(temp_pdf_path)
-
-            while uploaded_file.state.name == "PROCESSING":
-                time.sleep(1)
-                uploaded_file = genai.get_file(uploaded_file.name)
-
-            for model_name in GEMINI_MODELS:
-                try:
-                    print(f"🤖 Model: {model_name}")
-
-                    model = genai.GenerativeModel(model_name)
-
-                    # ✅ START TIMER ONLY HERE (VALID CALL)
-                    start_time = time.time()
-
-                    response = model.generate_content(
-                        [prompt, uploaded_file]
-                    )
-
-                    # ✅ END TIMER
-                    end_time = time.time()
-
-                    if response.text:
-                        print("✅ SUCCESS")
-                        final_output = response.text
-
-                        processing_time_ms = int((end_time - start_time) * 1000)
-                        break
-
-                except Exception as model_error:
-                    err = str(model_error).lower()
-                    print(f"❌ Model failed: {err}")
-
-                    # ❌ DO NOT measure time for failed calls
-                    if "quota" in err or "limit" in err:
-                        break
-
-            if final_output:
-                break
-
-        except Exception as key_error:
-            print(f"❌ Key failed: {key_error}")
-            continue
+    try:
+        uploaded_file = gemini_upload_pdf(file_data)
+        start_time = time.time()
+        final_output = gemini_generate([prompt, uploaded_file])
+        processing_time_ms = int((time.time() - start_time) * 1000)
+    except Exception as extraction_error:
+        print(f'Answer extraction failed: {extraction_error}')
 
     if not final_output:
         messages.error(
@@ -931,11 +910,19 @@ def view_extracted_data(request, submission_id):
     return render(request, "view_extract.html", context)
 
 def evaluate_question(question_text, student_answer, max_marks):
+    if not student_answer or not student_answer.strip():
+        return {
+            "marks": 0,
+            "feedback": "No answer was provided for this question."
+        }
 
     prompt = f"""
-    You are a strict but fair exam evaluator.
+    You are a fair and helpful exam evaluator.
 
     Evaluate the student's answer based on correctness, completeness, and clarity.
+    Award reasonable partial credit for correct concepts, relevant examples, and
+    valid steps even when the answer has grammar, spelling, or formatting errors.
+    Do not penalize minor language mistakes unless they change the meaning.
 
     ----------------------------------------
 
@@ -953,11 +940,12 @@ def evaluate_question(question_text, student_answer, max_marks):
 
     1. Award marks step-by-step (partial marking allowed)
     2. If answer is correct → full marks
-    3. If partially correct → give proportional marks
-    4. If wrong → give 0 or very low marks
+    3. If partially correct → give proportional partial marks
+    4. If wrong or irrelevant → give 0 or very low marks
     5. If diagram is described → evaluate based on components/labels
     6. If math → check steps + final answer
-    7. Do NOT be too lenient
+    7. Do not require wording identical to the question or answer key.
+    8. Give concise, constructive feedback explaining the awarded marks.
 
     ----------------------------------------
 
@@ -969,49 +957,53 @@ def evaluate_question(question_text, student_answer, max_marks):
     }}
     """
 
-    for api_key in GEMINI_API_KEYS:
-        try:
-            genai.configure(api_key=api_key)
+    try:
+        raw = gemini_generate(prompt)
+        raw = raw.replace("```json", "").replace("```", "").strip()
+        json_match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if not json_match:
+            raise ValueError('Gemini returned no JSON object')
+        data = json.loads(json_match.group(0))
 
-            for model_name in GEMINI_MODELS:
-                try:
-                    model = genai.GenerativeModel(model_name)
+        marks = float(data.get("marks", 0))
+        feedback = str(data.get("feedback", "")).strip()
+        marks = min(max(marks, 0), float(max_marks))
 
-                    response = model.generate_content(prompt)
-
-                    if response.text:
-                        raw = response.text.strip()
-
-                        # 🔥 Clean JSON
-                        raw = raw.replace("```json", "").replace("```", "").strip()
-
-                        data = json.loads(raw)
-
-                        marks = float(data.get("marks", 0))
-                        feedback = data.get("feedback", "")
-
-                        # ✅ Safety cap
-                        marks = min(marks, float(max_marks))
-
-                        return {
-                            "marks": round(marks, 2),
-                            "feedback": feedback
-                        }
-
-                except Exception as model_error:
-                    err = str(model_error).lower()
-
-                    # 🔁 switch API key if quota hit
-                    if "quota" in err or "limit" in err:
-                        break
-
-        except Exception:
-            continue
+        return {
+            "marks": round(marks, 2),
+            "feedback": feedback or "Evaluated based on the submitted answer."
+        }
+    except Exception as evaluation_error:
+        print(f"Evaluation API failed: {evaluation_error}")
 
     # Keep failed calls distinguishable from a genuine zero score.
     return {
         "marks": 0,
-        "feedback": "AI evaluation failed; please retry this evaluation."
+        "feedback": "AI evaluation was unavailable. Please retry the evaluation."
+    }
+
+
+def evaluate_questions_batch(question_items):
+    prompt = """
+You are a fair exam evaluator. Evaluate each submitted answer against its question.
+Give reasonable partial credit for correct concepts and valid steps. Do not penalize
+minor grammar, spelling, or formatting mistakes unless they change the meaning.
+If an answer is blank, award zero and say that no answer was provided.
+Return JSON only in this format:
+{"evaluations": [{"question_number": 1, "marks": 0, "feedback": "..."}]}
+
+Questions and answers:
+""" + json.dumps(question_items, ensure_ascii=False)
+
+    raw = gemini_generate(prompt).replace('```json', '').replace('```', '').strip()
+    json_match = re.search(r'\{.*\}', raw, re.DOTALL)
+    if not json_match:
+        raise ValueError('Gemini returned no batch JSON object')
+    data = json.loads(json_match.group(0))
+    return {
+        str(item['question_number']): item
+        for item in data.get('evaluations', [])
+        if 'question_number' in item
     }
 
 def evaluate_submission_view(request, submission_id):
@@ -1029,10 +1021,12 @@ def evaluate_submission_view(request, submission_id):
         extract_version=extract_version
     )
 
-    answer_map = {
-        str(a.question_number): a.answer_text
-        for a in answers
-    }
+    answer_map = {}
+    for answer in answers:
+        question_key = str(answer.question_number)
+        existing_answer = answer_map.get(question_key, '')
+        if len(answer.answer_text or '') > len(existing_answer):
+            answer_map[question_key] = answer.answer_text or ''
 
     questions = Question.objects.filter(
         exam=submission.exam
@@ -1056,6 +1050,21 @@ def evaluate_submission_view(request, submission_id):
     # 🔥 clear old question evaluations
     evaluation.question_evaluations.all().delete()
 
+    batch_items = [
+        {
+            'question_number': q.question_number,
+            'question': q.text,
+            'max_marks': q.marks,
+            'student_answer': answer_map.get(str(q.question_number), ''),
+        }
+        for q in unique_questions
+    ]
+    try:
+        batch_results = evaluate_questions_batch(batch_items)
+    except Exception as batch_error:
+        print(f'Batch evaluation failed: {batch_error}')
+        batch_results = {}
+
     total_score = 0
 
     for q in unique_questions:
@@ -1063,11 +1072,21 @@ def evaluate_submission_view(request, submission_id):
         q_no = str(q.question_number)
         student_answer = answer_map.get(q_no, "")
 
-        result = evaluate_question(
-            q.text,
-            student_answer,
-            q.marks
-        )
+        if not student_answer or not student_answer.strip():
+            result = {
+                'marks': 0,
+                'feedback': 'No answer was provided for this question.'
+            }
+        else:
+            batch_result = batch_results.get(q_no)
+            if batch_result:
+                result = {
+                    'marks': min(max(float(batch_result.get('marks', 0)), 0), q.marks),
+                    'feedback': str(batch_result.get('feedback', '')).strip()
+                    or 'Evaluated based on the submitted answer.'
+                }
+            else:
+                result = evaluate_question(q.text, student_answer, q.marks)
 
         total_score += result["marks"]
 
