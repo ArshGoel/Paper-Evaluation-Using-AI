@@ -20,7 +20,6 @@ import random
 from Accounts.models import User
 from PIL import Image
 import io
-from django.core.files.base import ContentFile
 import json
 from .models import QuestionEvaluation, StudentSheetExtractVersion
 from collections import defaultdict
@@ -903,14 +902,8 @@ def extract_student_sheets(request, submission_id):
     obj = StudentSheetExtractVersion.objects.create(**extract_data)
     mark_best_extract_version(submission)
     obj.refresh_from_db()
-    # Step 4: save file
-    json_content = json.dumps(parsed_json, indent=4)
-
-    obj.json_file.save(
-        f"v{version}.json",
-        ContentFile(json_content)
-    )
-
+    # The parsed JSON is already stored in structured_json. Avoid uploading it
+    # to Cloudinary's image endpoint as a redundant JSON file.
     obj.save()
     save_extracted_answers(obj, parsed_json)
     
